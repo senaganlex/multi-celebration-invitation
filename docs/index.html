@@ -1127,6 +1127,115 @@
       transform: translateY(0);
     }
 
+
+
+    /* Live RSVP synchronization feedback */
+    .stats-row[data-live-state="syncing"] .status-dot {
+      animation: livePulse 1s var(--ease) infinite alternate;
+    }
+
+    .stats-row[data-live-state="offline"] .status-dot {
+      background: var(--danger);
+      box-shadow: 0 0 12px rgba(255, 136, 148, .42);
+    }
+
+    .stat-pill.is-updated {
+      animation: statRefresh .62s var(--ease);
+    }
+
+    @keyframes livePulse {
+      from { opacity: .45; transform: scale(.8); }
+      to { opacity: 1; transform: scale(1.15); }
+    }
+
+    @keyframes statRefresh {
+      0% { transform: scale(1); border-color: rgba(255,255,255,.10); }
+      42% { transform: scale(1.045); border-color: rgba(245,201,106,.48); }
+      100% { transform: scale(1); border-color: rgba(255,255,255,.10); }
+    }
+
+    /* Clear visual cue that the invitation continues below the first viewport. */
+    .scroll-indicator {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      z-index: 4;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 16px;
+      color: #aab7c9;
+      background: transparent;
+      cursor: pointer;
+      opacity: 1;
+      transform: translate(-50%, 0);
+      transition: opacity .28s var(--ease), transform .28s var(--ease);
+    }
+
+    .scroll-indicator:hover {
+      color: var(--gold-2);
+      transform: translate(-50%, -2px);
+    }
+
+    .scroll-indicator.is-hidden {
+      opacity: 0;
+      transform: translate(-50%, 10px);
+      pointer-events: none;
+    }
+
+    .scroll-indicator-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .scroll-mouse {
+      position: relative;
+      width: 24px;
+      height: 36px;
+      border: 1.5px solid rgba(255,255,255,.34);
+      border-radius: 999px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .scroll-mouse::after {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 50%;
+      width: 3px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--gold);
+      transform: translateX(-50%);
+      animation: scrollWheel 1.55s var(--ease) infinite;
+    }
+
+    .scroll-chevron {
+      width: 13px;
+      height: 13px;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg);
+      animation: scrollChevron 1.55s var(--ease) infinite;
+    }
+
+    @keyframes scrollWheel {
+      0% { opacity: 0; transform: translate(-50%, -1px); }
+      25% { opacity: 1; }
+      75% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, 9px); }
+    }
+
+    @keyframes scrollChevron {
+      0%, 100% { opacity: .35; translate: 0 -2px; }
+      50% { opacity: 1; translate: 0 2px; }
+    }
+
     @media (max-width: 900px) {
       .hero {
         min-height: auto;
@@ -1169,7 +1278,11 @@
 
       .hero {
         padding-top: 112px;
-        padding-bottom: 48px;
+        padding-bottom: 86px;
+      }
+
+      .scroll-indicator {
+        bottom: 18px;
       }
 
       h1 {
@@ -1251,6 +1364,12 @@
 
       .orb {
         display: none;
+      }
+
+      .scroll-mouse::after,
+      .scroll-chevron,
+      .stats-row[data-live-state="syncing"] .status-dot {
+        animation: none !important;
       }
     }
   </style>
@@ -1383,6 +1502,17 @@
           </div>
         </aside>
       </div>
+
+      <button
+        class="scroll-indicator"
+        id="scrollIndicator"
+        type="button"
+        aria-label="Scroll down to view more invitation details"
+      >
+        <span class="scroll-indicator-label">Scroll to explore</span>
+        <span class="scroll-mouse" aria-hidden="true"></span>
+        <span class="scroll-chevron" aria-hidden="true"></span>
+      </button>
     </section>
 
     <section id="celebrations">
@@ -1410,11 +1540,11 @@
             <div class="person-list">
               <div class="person">
                 <strong>Lex Mariun Señagan</strong>
-                <span>Diploma in Computer Engineering</span>
+                <span>Computer Engineer</span>
               </div>
               <div class="person">
                 <strong>Lexter Jay Señagan</strong>
-                <span>Diploma in Electrical Engineering</span>
+                <span>Electrical Engineer</span>
               </div>
             </div>
           </article>
@@ -1537,10 +1667,16 @@
               later to update your response if your plans change.
             </p>
 
-            <div class="stats-row" id="statsRow" aria-live="polite">
-              <span class="stat-pill">
-                <span class="status-dot"></span>
-                RSVP system ready
+            <div class="stats-row" id="statsRow" aria-live="polite" data-live-state="syncing">
+              <span class="stat-pill" id="attendingStat">
+                <span class="status-dot" aria-hidden="true"></span>
+                <strong id="attendingCount">—</strong> attending
+              </span>
+              <span class="stat-pill" id="responseStat">
+                <strong id="responseCount">—</strong> responses
+              </span>
+              <span class="stat-pill" id="liveStat" title="Automatically synchronizes with the latest RSVP data">
+                <span id="liveStateText">Syncing…</span>
               </span>
             </div>
           </div>
@@ -1702,6 +1838,7 @@
 
       const EVENT_DATE = new Date("2026-08-22T00:00:00+08:00");
       const RSVP_STORAGE_KEY = "multiCelebrationRsvpV1";
+      const LIVE_STATS_INTERVAL_MS = 5000;
 
       const els = {
         modal: document.getElementById("rsvpModal"),
@@ -1722,12 +1859,21 @@
         successTitle: document.getElementById("successTitle"),
         successText: document.getElementById("successText"),
         statsRow: document.getElementById("statsRow"),
+        attendingStat: document.getElementById("attendingStat"),
+        responseStat: document.getElementById("responseStat"),
+        attendingCount: document.getElementById("attendingCount"),
+        responseCount: document.getElementById("responseCount"),
+        liveStateText: document.getElementById("liveStateText"),
+        scrollIndicator: document.getElementById("scrollIndicator"),
         eventCard: document.getElementById("eventCard"),
         toastRegion: document.getElementById("toastRegion")
       };
 
       let storedRsvp = readStoredRsvp();
       let lastFocusedElement = null;
+      let lastStats = null;
+      let statsRequestInFlight = false;
+      let liveStatsTimer = null;
 
       function apiConfigured() {
         return !API_BASE.includes("YOUR-RAILWAY-API-DOMAIN");
@@ -2011,44 +2157,142 @@
         }
       });
 
-      async function loadStats() {
+      function pulseStat(element) {
+        if (!element) return;
+        element.classList.remove("is-updated");
+        void element.offsetWidth;
+        element.classList.add("is-updated");
+        window.setTimeout(() => element.classList.remove("is-updated"), 700);
+      }
+
+      function renderStats(stats) {
+        const next = {
+          attendingPeople: Number(stats.attendingPeople || 0),
+          responses: Number(stats.responses || 0)
+        };
+
+        if (!lastStats || lastStats.attendingPeople !== next.attendingPeople) {
+          els.attendingCount.textContent = String(next.attendingPeople);
+          if (lastStats) pulseStat(els.attendingStat);
+        }
+
+        if (!lastStats || lastStats.responses !== next.responses) {
+          els.responseCount.textContent = String(next.responses);
+          if (lastStats) pulseStat(els.responseStat);
+        }
+
+        lastStats = next;
+      }
+
+      function setLiveStatsState(state) {
+        els.statsRow.dataset.liveState = state;
+
+        if (state === "syncing") {
+          els.liveStateText.textContent = "Syncing…";
+        } else if (state === "live") {
+          els.liveStateText.textContent = "Live";
+        } else if (state === "offline") {
+          els.liveStateText.textContent = "Reconnecting…";
+        } else {
+          els.liveStateText.textContent = "Live sync unavailable";
+        }
+      }
+
+      async function loadStats({ silent = false } = {}) {
         if (!apiConfigured()) {
-          els.statsRow.innerHTML = `
-            <span class="stat-pill">
-              <span class="status-dot"></span>
-              Connect Railway API to activate live RSVPs
-            </span>
-          `;
+          setLiveStatsState("unavailable");
           return;
         }
 
+        // Never allow multiple polling requests to stack up on a slow connection.
+        if (statsRequestInFlight) return;
+        statsRequestInFlight = true;
+
+        if (!silent && !lastStats) {
+          setLiveStatsState("syncing");
+        }
+
         try {
-          const response = await fetch(`${API_BASE}/api/rsvps/stats`, {
-            headers: { "Accept": "application/json" }
-          });
+          // Cache-busting + no-store ensures the counters reflect the latest
+          // database totals instead of a browser/intermediary cached response.
+          const response = await fetch(
+            `${API_BASE}/api/rsvps/stats?_=${Date.now()}`,
+            {
+              cache: "no-store",
+              headers: {
+                "Accept": "application/json",
+                "Cache-Control": "no-cache"
+              }
+            }
+          );
 
           if (!response.ok) throw new Error("Stats unavailable");
 
           const stats = await response.json();
-
-          els.statsRow.innerHTML = `
-            <span class="stat-pill">
-              <span class="status-dot"></span>
-              <strong>${Number(stats.attendingPeople || 0)}</strong> attending
-            </span>
-            <span class="stat-pill">
-              <strong>${Number(stats.responses || 0)}</strong> responses
-            </span>
-          `;
+          renderStats(stats);
+          setLiveStatsState("live");
         } catch {
-          els.statsRow.innerHTML = `
-            <span class="stat-pill">
-              <span class="status-dot"></span>
-              RSVP system active
-            </span>
-          `;
+          // Keep the last known counters visible during transient network errors.
+          setLiveStatsState("offline");
+        } finally {
+          statsRequestInFlight = false;
         }
       }
+
+      function startLiveStatsSync() {
+        if (liveStatsTimer || !apiConfigured()) return;
+
+        liveStatsTimer = window.setInterval(() => {
+          if (!document.hidden) {
+            loadStats({ silent: true });
+          }
+        }, LIVE_STATS_INTERVAL_MS);
+      }
+
+      function stopLiveStatsSync() {
+        if (!liveStatsTimer) return;
+        window.clearInterval(liveStatsTimer);
+        liveStatsTimer = null;
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          stopLiveStatsSync();
+        } else {
+          loadStats({ silent: true });
+          startLiveStatsSync();
+        }
+      });
+
+      window.addEventListener("focus", () => {
+        if (!document.hidden) loadStats({ silent: true });
+      });
+
+      window.addEventListener("online", () => {
+        loadStats({ silent: true });
+        startLiveStatsSync();
+      });
+
+      window.addEventListener("offline", () => {
+        setLiveStatsState("offline");
+      });
+
+      function updateScrollIndicator() {
+        if (!els.scrollIndicator) return;
+        const shouldHide = window.scrollY > 72;
+        els.scrollIndicator.classList.toggle("is-hidden", shouldHide);
+      }
+
+      els.scrollIndicator?.addEventListener("click", () => {
+        document.getElementById("celebrations")?.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "auto"
+            : "smooth",
+          block: "start"
+        });
+      });
+
+      window.addEventListener("scroll", updateScrollIndicator, { passive: true });
 
       function updateCountdown() {
         const now = new Date();
@@ -2189,6 +2433,8 @@
       updateCountdown();
       window.setInterval(updateCountdown, 1000);
       loadStats();
+      startLiveStatsSync();
+      updateScrollIndicator();
       populateStoredRsvp();
       syncAttendanceUI();
     })();
