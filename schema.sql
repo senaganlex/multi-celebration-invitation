@@ -14,3 +14,16 @@ CREATE TABLE IF NOT EXISTS rsvps (
 
 CREATE INDEX IF NOT EXISTS idx_rsvps_attendance
   ON rsvps (attendance);
+
+CREATE TABLE IF NOT EXISTS presence_sessions (
+  session_id UUID PRIMARY KEY,
+  viewer_id UUID NOT NULL,
+  last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_presence_sessions_last_seen
+  ON presence_sessions (last_seen_at);
+
+CREATE INDEX IF NOT EXISTS idx_presence_sessions_viewer_id
+  ON presence_sessions (viewer_id);
+

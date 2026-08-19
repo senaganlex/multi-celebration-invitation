@@ -2166,6 +2166,154 @@
     }
 
 
+
+    /* ============================================================
+       Active Viewer Presence
+       ============================================================ */
+    .presence-indicator {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 40px;
+      padding: 0 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.045);
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
+      user-select: none;
+      transition:
+        transform var(--motion-base) var(--ease-out),
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        opacity var(--motion-base) var(--ease-standard);
+    }
+
+    .presence-indicator::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 0 0 1px rgba(103,232,165,.16);
+      transition: opacity var(--motion-base) var(--ease-standard);
+    }
+
+    .presence-indicator[data-state="live"]::after {
+      opacity: 1;
+    }
+
+    .presence-indicator.is-updated {
+      animation: presenceRefresh 620ms var(--ease-out);
+    }
+
+    .presence-dot {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 0 rgba(103,232,165,.28), 0 0 14px rgba(103,232,165,.48);
+      transition:
+        background-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-base) var(--ease-standard),
+        transform var(--motion-base) var(--ease-spring),
+        opacity var(--motion-base) var(--ease-standard);
+    }
+
+    .presence-indicator[data-state="connecting"] .presence-dot {
+      animation: presencePulse 1.15s var(--ease-standard) infinite;
+    }
+
+    .presence-indicator[data-state="idle"] .presence-dot {
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(245,201,106,.36);
+      opacity: .82;
+    }
+
+    .presence-indicator[data-state="offline"] .presence-dot,
+    .presence-indicator[data-state="unavailable"] .presence-dot {
+      background: var(--danger);
+      box-shadow: 0 0 12px rgba(255,136,148,.35);
+      opacity: .78;
+    }
+
+    .presence-count {
+      min-width: 1ch;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-weight: 850;
+    }
+
+    .presence-label {
+      color: var(--muted);
+      transition: color var(--motion-base) var(--ease-standard);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .presence-indicator:hover {
+        transform: translate3d(0, -2px, 0);
+        border-color: rgba(103,232,165,.22);
+        background: rgba(255,255,255,.07);
+        box-shadow: 0 10px 28px rgba(0,0,0,.15);
+      }
+
+      .presence-indicator:hover .presence-dot {
+        transform: scale(1.08);
+      }
+
+      .presence-indicator:hover .presence-label {
+        color: #d5deea;
+      }
+    }
+
+    @keyframes presencePulse {
+      0%, 100% {
+        opacity: .55;
+        transform: scale(.88);
+        box-shadow: 0 0 0 0 rgba(103,232,165,.24), 0 0 10px rgba(103,232,165,.28);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.08);
+        box-shadow: 0 0 0 5px rgba(103,232,165,0), 0 0 18px rgba(103,232,165,.52);
+      }
+    }
+
+    @keyframes presenceRefresh {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      45% { transform: translate3d(0, -1px, 0) scale(1.035); }
+    }
+
+    @media (max-width: 760px) {
+      .presence-indicator {
+        padding: 0 10px;
+      }
+
+      .presence-label {
+        display: none;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .presence-indicator {
+        min-height: 38px;
+        padding: 0 9px;
+      }
+
+      .presence-dot {
+        width: 7px;
+        height: 7px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -2182,7 +2330,9 @@
 
       .scroll-mouse::after,
       .scroll-chevron,
-      .stats-row[data-live-state="syncing"] .status-dot {
+      .stats-row[data-live-state="syncing"] .status-dot,
+      .presence-indicator,
+      .presence-dot {
         animation: none !important;
       }
 
@@ -2229,6 +2379,20 @@
     </a>
 
     <div class="top-actions">
+      <div
+        class="presence-indicator"
+        id="presenceIndicator"
+        data-state="connecting"
+        role="status"
+        aria-live="polite"
+        aria-label="Active viewers"
+        title="Connecting active-viewer indicator…"
+      >
+        <span class="presence-dot" aria-hidden="true"></span>
+        <strong class="presence-count" id="presenceCount">—</strong>
+        <span class="presence-label">viewing now</span>
+      </div>
+
       <a class="button secondary" href="#details">Event details</a>
       <button class="button primary js-open-rsvp" type="button">RSVP</button>
     </div>
@@ -2677,6 +2841,13 @@
       const RSVP_STORAGE_KEY = "multiCelebrationRsvpV1";
       const LIVE_STATS_INTERVAL_MS = 5000;
 
+      // Presence uses anonymous browser/session identifiers only. No names,
+      // RSVP data, IP addresses, or user-agent strings are stored for presence.
+      const PRESENCE_VIEWER_STORAGE_KEY = "multiCelebrationViewerIdV1";
+      const PRESENCE_HEARTBEAT_INTERVAL_MS = 15000;
+      const PRESENCE_COUNT_INTERVAL_MS = 5000;
+      const PRESENCE_IDLE_TIMEOUT_MS = 120000;
+
       const els = {
         modal: document.getElementById("rsvpModal"),
         form: document.getElementById("rsvpForm"),
@@ -2702,6 +2873,8 @@
         responseCount: document.getElementById("responseCount"),
         liveStateText: document.getElementById("liveStateText"),
         liveStat: document.getElementById("liveStat"),
+        presenceIndicator: document.getElementById("presenceIndicator"),
+        presenceCount: document.getElementById("presenceCount"),
         scrollIndicator: document.getElementById("scrollIndicator"),
         topbar: document.querySelector(".topbar"),
         eventCard: document.getElementById("eventCard"),
@@ -2713,6 +2886,17 @@
       let lastStats = null;
       let statsRequestInFlight = false;
       let liveStatsTimer = null;
+      let presenceHeartbeatTimer = null;
+      let presenceCountTimer = null;
+      let presenceIdleTimer = null;
+      let presenceHeartbeatInFlight = false;
+      let presenceCountInFlight = false;
+      let presenceActive = false;
+      let presenceRegistered = false;
+      let lastPresenceCount = null;
+      let lastPresenceActivityAt = 0;
+      const presenceViewerId = readOrCreatePresenceViewerId();
+      const presenceSessionId = createClientUuid();
       let modalCloseTimer = null;
       let successSwapTimer = null;
       let formMessageClearTimer = null;
@@ -2725,6 +2909,49 @@
 
       function apiConfigured() {
         return !API_BASE.includes("YOUR-RAILWAY-API-DOMAIN");
+      }
+
+      function createClientUuid() {
+        if (typeof crypto?.randomUUID === "function") {
+          return crypto.randomUUID();
+        }
+
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+        const hex = Array.from(bytes, (byte) =>
+          byte.toString(16).padStart(2, "0")
+        ).join("");
+
+        return [
+          hex.slice(0, 8),
+          hex.slice(8, 12),
+          hex.slice(12, 16),
+          hex.slice(16, 20),
+          hex.slice(20)
+        ].join("-");
+      }
+
+      function isUuid(value) {
+        return typeof value === "string" &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+      }
+
+      function readOrCreatePresenceViewerId() {
+        try {
+          const existing = localStorage.getItem(PRESENCE_VIEWER_STORAGE_KEY);
+          if (isUuid(existing)) return existing;
+
+          const created = createClientUuid();
+          localStorage.setItem(PRESENCE_VIEWER_STORAGE_KEY, created);
+          return created;
+        } catch {
+          // Presence remains functional without persistent storage, but the same
+          // browser cannot be deduplicated across tabs/reloads in that case.
+          return createClientUuid();
+        }
       }
 
       function readStoredRsvp() {
@@ -3264,6 +3491,348 @@
         setLiveStatsState("offline");
       });
 
+
+      function pulsePresenceIndicator() {
+        if (!els.presenceIndicator) return;
+        els.presenceIndicator.classList.remove("is-updated");
+        void els.presenceIndicator.offsetWidth;
+        els.presenceIndicator.classList.add("is-updated");
+        window.setTimeout(
+          () => els.presenceIndicator?.classList.remove("is-updated"),
+          700
+        );
+      }
+
+      function setPresenceState(state) {
+        if (!els.presenceIndicator) return;
+
+        const previous = els.presenceIndicator.dataset.state;
+        els.presenceIndicator.dataset.state = state;
+
+        if (state === "live") {
+          els.presenceIndicator.title =
+            "Anonymous active-viewer count. Updates automatically.";
+        } else if (state === "connecting") {
+          els.presenceIndicator.title =
+            "Connecting active-viewer indicator…";
+        } else if (state === "idle") {
+          els.presenceIndicator.title =
+            "You are temporarily not counted because this tab is inactive.";
+        } else if (state === "offline") {
+          els.presenceIndicator.title =
+            "Active-viewer count is reconnecting.";
+        } else {
+          els.presenceIndicator.title =
+            "Active-viewer count is unavailable.";
+        }
+
+        if (previous && previous !== state) {
+          pulsePresenceIndicator();
+        }
+      }
+
+      function renderPresenceCount(value) {
+        if (!els.presenceCount) return;
+
+        const next = Math.max(0, Number.parseInt(value, 10) || 0);
+
+        if (lastPresenceCount === null) {
+          animateNumber(els.presenceCount, 0, next);
+        } else if (lastPresenceCount !== next) {
+          animateNumber(els.presenceCount, lastPresenceCount, next);
+          pulsePresenceIndicator();
+        }
+
+        lastPresenceCount = next;
+      }
+
+      async function heartbeatPresence() {
+        if (
+          !apiConfigured() ||
+          !presenceActive ||
+          document.hidden ||
+          !navigator.onLine ||
+          presenceHeartbeatInFlight
+        ) {
+          return;
+        }
+
+        presenceHeartbeatInFlight = true;
+
+        try {
+          const response = await fetch(`${API_BASE}/api/presence/heartbeat`, {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({
+              viewerId: presenceViewerId,
+              sessionId: presenceSessionId
+            })
+          });
+
+          if (!response.ok) throw new Error("Presence heartbeat failed");
+
+          const data = await response.json();
+          presenceRegistered = true;
+          renderPresenceCount(data.activeUsers);
+          setPresenceState("live");
+        } catch {
+          presenceRegistered = false;
+          setPresenceState("offline");
+        } finally {
+          presenceHeartbeatInFlight = false;
+        }
+      }
+
+      async function loadPresenceCount({ silent = false } = {}) {
+        if (!apiConfigured()) {
+          setPresenceState("unavailable");
+          return;
+        }
+
+        if (document.hidden || presenceCountInFlight) return;
+        presenceCountInFlight = true;
+
+        if (!silent && lastPresenceCount === null) {
+          setPresenceState("connecting");
+        }
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/api/presence/count?_=${Date.now()}`,
+            {
+              cache: "no-store",
+              headers: {
+                "Accept": "application/json"
+              }
+            }
+          );
+
+          if (!response.ok) throw new Error("Presence count unavailable");
+
+          const data = await response.json();
+          renderPresenceCount(data.activeUsers);
+
+          if (presenceActive && presenceRegistered) {
+            setPresenceState("live");
+          } else if (presenceActive) {
+            setPresenceState("connecting");
+          } else {
+            setPresenceState("idle");
+          }
+        } catch {
+          setPresenceState("offline");
+        } finally {
+          presenceCountInFlight = false;
+        }
+      }
+
+      function startPresenceHeartbeat() {
+        if (presenceHeartbeatTimer || !apiConfigured()) return;
+
+        presenceHeartbeatTimer = window.setInterval(
+          heartbeatPresence,
+          PRESENCE_HEARTBEAT_INTERVAL_MS
+        );
+      }
+
+      function stopPresenceHeartbeat() {
+        if (!presenceHeartbeatTimer) return;
+        window.clearInterval(presenceHeartbeatTimer);
+        presenceHeartbeatTimer = null;
+      }
+
+      function startPresenceCountSync() {
+        if (presenceCountTimer || !apiConfigured()) return;
+
+        presenceCountTimer = window.setInterval(() => {
+          if (!document.hidden) {
+            loadPresenceCount({ silent: true });
+          }
+        }, PRESENCE_COUNT_INTERVAL_MS);
+      }
+
+      function stopPresenceCountSync() {
+        if (!presenceCountTimer) return;
+        window.clearInterval(presenceCountTimer);
+        presenceCountTimer = null;
+      }
+
+      function schedulePresenceIdleTimeout() {
+        if (presenceIdleTimer) {
+          window.clearTimeout(presenceIdleTimer);
+        }
+
+        if (!presenceActive || document.hidden) {
+          presenceIdleTimer = null;
+          return;
+        }
+
+        presenceIdleTimer = window.setTimeout(() => {
+          deactivatePresence({ reason: "idle" });
+        }, PRESENCE_IDLE_TIMEOUT_MS);
+      }
+
+      function sendPresenceLeave({ beacon = false } = {}) {
+        if (!apiConfigured()) return;
+
+        const payload = JSON.stringify({
+          viewerId: presenceViewerId,
+          sessionId: presenceSessionId
+        });
+
+        if (beacon && typeof navigator.sendBeacon === "function") {
+          try {
+            const body = new Blob([payload], {
+              type: "text/plain;charset=UTF-8"
+            });
+
+            if (navigator.sendBeacon(`${API_BASE}/api/presence/leave`, body)) {
+              return;
+            }
+          } catch {
+            // Fall through to a keepalive request.
+          }
+        }
+
+        fetch(`${API_BASE}/api/presence/leave`, {
+          method: "POST",
+          keepalive: true,
+          headers: {
+            "Content-Type": "text/plain;charset=UTF-8"
+          },
+          body: payload
+        }).catch(() => {
+          // The server-side presence lease expires automatically if a leave
+          // signal cannot be delivered during disconnect/navigation.
+        });
+      }
+
+      function activatePresence() {
+        if (!apiConfigured()) {
+          setPresenceState("unavailable");
+          return;
+        }
+
+        if (document.hidden || !navigator.onLine) {
+          return;
+        }
+
+        presenceActive = true;
+        setPresenceState("connecting");
+        startPresenceHeartbeat();
+        startPresenceCountSync();
+        schedulePresenceIdleTimeout();
+
+        heartbeatPresence();
+        loadPresenceCount({ silent: true });
+      }
+
+      function deactivatePresence({
+        reason = "idle",
+        beacon = false,
+        stopCount = false
+      } = {}) {
+        const wasActive = presenceActive;
+        presenceActive = false;
+        presenceRegistered = false;
+        stopPresenceHeartbeat();
+
+        if (presenceIdleTimer) {
+          window.clearTimeout(presenceIdleTimer);
+          presenceIdleTimer = null;
+        }
+
+        if (stopCount) {
+          stopPresenceCountSync();
+        }
+
+        if (wasActive) {
+          sendPresenceLeave({ beacon });
+        }
+
+        if (!document.hidden) {
+          setPresenceState(reason === "offline" ? "offline" : "idle");
+        }
+      }
+
+      function registerPresenceActivity() {
+        const now = Date.now();
+
+        // High-frequency pointer/scroll activity only needs to refresh the idle
+        // lease once per second.
+        if (now - lastPresenceActivityAt < 1000 && presenceActive) {
+          return;
+        }
+
+        lastPresenceActivityAt = now;
+
+        if (document.hidden || !navigator.onLine) return;
+
+        if (!presenceActive) {
+          activatePresence();
+        } else {
+          schedulePresenceIdleTimeout();
+        }
+      }
+
+      ["pointermove", "pointerdown", "keydown", "touchstart", "scroll"].forEach(
+        (eventName) => {
+          window.addEventListener(eventName, registerPresenceActivity, {
+            passive: true
+          });
+        }
+      );
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          deactivatePresence({
+            reason: "hidden",
+            beacon: true,
+            stopCount: true
+          });
+        } else if (navigator.onLine) {
+          activatePresence();
+        }
+      });
+
+      window.addEventListener("focus", registerPresenceActivity);
+
+      window.addEventListener("online", () => {
+        activatePresence();
+      });
+
+      window.addEventListener("offline", () => {
+        presenceActive = false;
+        presenceRegistered = false;
+        stopPresenceHeartbeat();
+        stopPresenceCountSync();
+
+        if (presenceIdleTimer) {
+          window.clearTimeout(presenceIdleTimer);
+          presenceIdleTimer = null;
+        }
+
+        setPresenceState("offline");
+      });
+
+      window.addEventListener("pagehide", () => {
+        deactivatePresence({
+          reason: "hidden",
+          beacon: true,
+          stopCount: true
+        });
+      });
+
+      window.addEventListener("pageshow", () => {
+        if (!document.hidden && navigator.onLine) {
+          activatePresence();
+        }
+      });
+
       function updateScrollIndicator() {
         const scrollY = window.scrollY;
 
@@ -3471,6 +4040,7 @@
       window.setInterval(updateCountdown, 1000);
       loadStats();
       startLiveStatsSync();
+      activatePresence();
       updateScrollIndicator();
       populateStoredRsvp();
       syncAttendanceUI();

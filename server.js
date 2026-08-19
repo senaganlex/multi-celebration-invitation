@@ -54,6 +54,7 @@ app.use(
 );
 
 app.use(express.json({ limit: "16kb" }));
+app.use(express.text({ type: "text/plain", limit: "4kb" }));
 
 const writeLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -71,6 +72,21 @@ const readLimiter = rateLimit({
   standardHeaders: "draft-7",
   legacyHeaders: false
 });
+
+// Presence traffic is intentionally isolated from RSVP write limits. The
+// relatively high ceiling accommodates multiple guests behind the same
+// household/mobile-carrier NAT while still limiting abusive request bursts.
+const presenceLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 1200,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: {
+    error: "Too many presence requests. Please try again shortly."
+  }
+});
+
+const PRESENCE_TTL_SECONDS = 45;
 
 function cleanText(value, maxLength) {
   if (typeof value !== "string") return "";
@@ -138,6 +154,51 @@ function getEditToken(req) {
   return typeof token === "string" ? token.trim() : "";
 }
 
+function isUuid(value) {
+  return typeof value === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function getPresencePayload(req) {
+  let body = req.body;
+
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      return { error: "Invalid presence payload." };
+    }
+  }
+
+  const viewerId = body?.viewerId;
+  const sessionId = body?.sessionId;
+
+  if (!isUuid(viewerId) || !isUuid(sessionId)) {
+    return { error: "Invalid presence identifiers." };
+  }
+
+  return {
+    value: {
+      viewerId,
+      sessionId
+    }
+  };
+}
+
+async function getActiveUserCount() {
+  const result = await pool.query(
+    `
+      SELECT COUNT(DISTINCT viewer_id)::int AS active_users
+      FROM presence_sessions
+      WHERE last_seen_at >=
+        NOW() - ($1::int * INTERVAL '1 second')
+    `,
+    [PRESENCE_TTL_SECONDS]
+  );
+
+  return result.rows[0]?.active_users ?? 0;
+}
+
 async function ensureSchema() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS rsvps (
@@ -158,6 +219,24 @@ async function ensureSchema() {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_rsvps_attendance
       ON rsvps (attendance);
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS presence_sessions (
+      session_id UUID PRIMARY KEY,
+      viewer_id UUID NOT NULL,
+      last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_presence_sessions_last_seen
+      ON presence_sessions (last_seen_at);
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_presence_sessions_viewer_id
+      ON presence_sessions (viewer_id);
   `);
 }
 
@@ -198,6 +277,87 @@ app.get("/api/rsvps/stats", readLimiter, async (_req, res) => {
   } catch (error) {
     console.error("Stats query failed:", error);
     res.status(500).json({ error: "Unable to load RSVP statistics." });
+  }
+});
+
+app.get("/api/presence/count", presenceLimiter, async (_req, res) => {
+  try {
+    const activeUsers = await getActiveUserCount();
+
+    res.set("Cache-Control", "no-store");
+    res.json({
+      activeUsers,
+      ttlSeconds: PRESENCE_TTL_SECONDS
+    });
+  } catch (error) {
+    console.error("Presence count failed:", error);
+    res.status(500).json({ error: "Unable to load active viewer count." });
+  }
+});
+
+app.post("/api/presence/heartbeat", presenceLimiter, async (req, res) => {
+  const validation = getPresencePayload(req);
+
+  if (validation.error) {
+    return res.status(400).json({ error: validation.error });
+  }
+
+  const { viewerId, sessionId } = validation.value;
+
+  try {
+    await pool.query(
+      `
+        INSERT INTO presence_sessions (
+          session_id,
+          viewer_id,
+          last_seen_at
+        )
+        VALUES ($1, $2, NOW())
+        ON CONFLICT (session_id)
+        DO UPDATE SET
+          viewer_id = EXCLUDED.viewer_id,
+          last_seen_at = NOW()
+      `,
+      [sessionId, viewerId]
+    );
+
+    const activeUsers = await getActiveUserCount();
+
+    res.set("Cache-Control", "no-store");
+    res.json({
+      ok: true,
+      activeUsers,
+      ttlSeconds: PRESENCE_TTL_SECONDS
+    });
+  } catch (error) {
+    console.error("Presence heartbeat failed:", error);
+    res.status(500).json({ error: "Unable to update viewer presence." });
+  }
+});
+
+app.post("/api/presence/leave", presenceLimiter, async (req, res) => {
+  const validation = getPresencePayload(req);
+
+  if (validation.error) {
+    return res.status(400).json({ error: validation.error });
+  }
+
+  const { viewerId, sessionId } = validation.value;
+
+  try {
+    await pool.query(
+      `
+        DELETE FROM presence_sessions
+        WHERE session_id = $1
+          AND viewer_id = $2
+      `,
+      [sessionId, viewerId]
+    );
+
+    res.status(204).end();
+  } catch (error) {
+    console.error("Presence leave failed:", error);
+    res.status(500).json({ error: "Unable to clear viewer presence." });
   }
 });
 
@@ -398,8 +558,30 @@ app.use((error, _req, res, _next) => {
   return res.status(500).json({ error: "Unexpected server error." });
 });
 
+async function cleanupExpiredPresence() {
+  try {
+    await pool.query(`
+      DELETE FROM presence_sessions
+      WHERE last_seen_at < NOW() - INTERVAL '24 hours'
+    `);
+  } catch (error) {
+    console.error("Presence cleanup failed:", error);
+  }
+}
+
+let presenceCleanupTimer = null;
+
 ensureSchema()
   .then(() => {
+    presenceCleanupTimer = setInterval(
+      cleanupExpiredPresence,
+      15 * 60 * 1000
+    );
+
+    if (typeof presenceCleanupTimer.unref === "function") {
+      presenceCleanupTimer.unref();
+    }
+
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Multi-Celebration RSVP API listening on port ${PORT}`);
     });
@@ -411,6 +593,12 @@ ensureSchema()
 
 async function shutdown(signal) {
   console.log(`${signal} received. Closing database pool.`);
+
+  if (presenceCleanupTimer) {
+    clearInterval(presenceCleanupTimer);
+    presenceCleanupTimer = null;
+  }
+
   await pool.end();
   process.exit(0);
 }
