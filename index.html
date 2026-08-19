@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta
+    name="description"
+    content="Multi-Celebration Invitation — Graduation and Birthday Celebration for the Señagan family."
+  />
+  <title>Multi-Celebration Invitation</title>
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-2: #0b1930;
+      --surface: rgba(255, 255, 255, 0.075);
+      --surface-strong: rgba(255, 255, 255, 0.115);
+      --surface-soft: rgba(255, 255, 255, 0.045);
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f8fafc;
+      --muted: #bac6d8;
+      --gold: #f5c96a;
+      --gold-2: #ffe7a3;
+      --cyan: #77d9ff;
+      --pink: #ff9fc8;
+      --green: #67e8a5;
+      --danger: #ff8894;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      --radius-lg: 32px;
+      --radius-md: 22px;
+      --radius-sm: 16px;
+      --max-width: 1180px;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(119, 217, 255, 0.15), transparent 30%),
+        radial-gradient(circle at 85% 22%, rgba(255, 159, 200, 0.12), transparent 32%),
+        radial-gradient(circle at 50% 88%, rgba(245, 201, 106, 0.11), transparent 28%),
+        linear-gradient(180deg, #06101e 0%, #0a1730 48%, #07111f 100%);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      border: 0;
+    }
+
+    img,
+    svg {
+      display: block;
+    }
+
+    ::selection {
+      background: rgba(245, 201, 106, 0.3);
+      color: #fff;
+    }
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(14px);
+      opacity: 0.55;
+      animation: floatOrb 14s var(--ease) infinite alternate;
+    }
+
+    .orb.one {
+      width: 360px;
+      height: 360px;
+      top: -150px;
+      left: -120px;
+      background: rgba(119, 217, 255, 0.12);
+    }
+
+    .orb.two {
+      width: 420px;
+      height: 420px;
+      top: 25%;
+      right: -180px;
+      background: rgba(255, 159, 200, 0.10);
+      animation-delay: -5s;
+    }
+
+    .orb.three {
+      width: 440px;
+      height: 440px;
+      bottom: -240px;
+      left: 35%;
+      background: rgba(245, 201, 106, 0.09);
+      animation-delay: -9s;
+    }
+
+    @keyframes floatOrb {
+      from { transform: translate3d(0, 0, 0) scale(0.95); }
+      to { transform: translate3d(24px, 40px, 0) scale(1.08); }
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 120;
+      pointer-events: none;
+    }
+
+    .page-shell {
+      width: min(calc(100% - 32px), var(--max-width));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(calc(100% - 28px), 1120px);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 10px 12px 10px 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(7, 17, 31, 0.68);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22);
+      transition: transform .3s var(--ease), background .3s var(--ease);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: #111827;
+      background:
+        radial-gradient(circle at 35% 30%, #fff7cf, #f5c96a 55%, #c8962d);
+      box-shadow: 0 0 0 4px rgba(245, 201, 106, 0.11);
+    }
+
+    .brand span:last-child {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .button {
+      position: relative;
+      isolation: isolate;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 750;
+      letter-spacing: -0.015em;
+      transition:
+        transform .22s var(--ease),
+        box-shadow .22s var(--ease),
+        border-color .22s var(--ease),
+        background .22s var(--ease);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: 0;
+      background: linear-gradient(
+        100deg,
+        transparent 18%,
+        rgba(255,255,255,.25) 45%,
+        transparent 72%
+      );
+      transform: translateX(-110%);
+    }
+
+    .button:hover::after {
+      opacity: 1;
+      animation: shine .75s var(--ease);
+    }
+
+    @keyframes shine {
+      to { transform: translateX(110%); }
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button:active {
+      transform: translateY(0) scale(.985);
+    }
+
+    .button.primary {
+      color: #141414;
+      background: linear-gradient(135deg, var(--gold-2), var(--gold));
+      box-shadow: 0 12px 30px rgba(245, 201, 106, .18);
+    }
+
+    .button.primary:hover {
+      box-shadow: 0 16px 40px rgba(245, 201, 106, .26);
+    }
+
+    .button.secondary {
+      border-color: var(--line);
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(10px);
+    }
+
+    .button.ghost {
+      min-height: 40px;
+      padding: 0 14px;
+      border-color: rgba(255,255,255,.1);
+      background: rgba(255,255,255,.045);
+      color: var(--muted);
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+      transform: none;
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      align-items: center;
+      padding: 122px 0 70px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(330px, .72fr);
+      gap: clamp(28px, 6vw, 76px);
+      align-items: center;
+    }
+
+    .eyebrow,
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border: 1px solid rgba(245, 201, 106, .23);
+      border-radius: 999px;
+      color: var(--gold-2);
+      background: rgba(245, 201, 106, .065);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow .dot,
+    .section-label .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 16px rgba(245, 201, 106, .7);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 800px;
+      margin: 22px 0 20px;
+      font-size: clamp(54px, 8vw, 106px);
+      line-height: .91;
+      letter-spacing: -0.07em;
+      font-weight: 850;
+    }
+
+    .gradient-text {
+      color: transparent;
+      background:
+        linear-gradient(100deg, #fff8d6 5%, #f5c96a 50%, #ffb5d4 95%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .hero-copy {
+      max-width: 690px;
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .mini-note {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 18px;
+      color: #9facbe;
+      font-size: 13px;
+    }
+
+    .mini-note svg {
+      width: 16px;
+      height: 16px;
+      color: var(--green);
+    }
+
+    .event-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.045));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px) saturate(140%);
+      -webkit-backdrop-filter: blur(22px) saturate(140%);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .event-card::before {
+      content: "";
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      right: -90px;
+      top: -80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 201, 106, .2), transparent 68%);
+      pointer-events: none;
+    }
+
+    .card-top {
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 28px;
+      background:
+        linear-gradient(160deg, rgba(245,201,106,.10), rgba(255,159,200,.045)),
+        radial-gradient(circle at 10% 10%, rgba(119,217,255,.15), transparent 45%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .date-badge {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .date-number {
+      width: 80px;
+      height: 80px;
+      display: grid;
+      place-items: center;
+      border-radius: 24px;
+      color: #15120a;
+      background: linear-gradient(135deg, #fff6cc, var(--gold));
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      box-shadow: 0 16px 36px rgba(245,201,106,.18);
+    }
+
+    .date-meta strong,
+    .date-meta span {
+      display: block;
+    }
+
+    .date-meta strong {
+      font-size: 19px;
+      letter-spacing: -.02em;
+    }
+
+    .date-meta span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .countdown-title {
+      margin: 24px 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .count-unit {
+      padding: 14px 8px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      background: rgba(4, 11, 22, .28);
+      text-align: center;
+    }
+
+    .count-unit strong {
+      display: block;
+      font-size: clamp(22px, 3vw, 30px);
+      letter-spacing: -.04em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .count-unit span {
+      display: block;
+      margin-top: 2px;
+      color: #92a0b5;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .card-bottom {
+      padding: 24px 28px 28px;
+    }
+
+    .location-row {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+    }
+
+    .round-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 50%;
+      background: rgba(255,255,255,.055);
+      color: var(--gold-2);
+    }
+
+    .location-row strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .location-row span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .location-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    section {
+      padding: 74px 0;
+    }
+
+    .section-header {
+      max-width: 720px;
+      margin-bottom: 34px;
+    }
+
+    .section-header h2 {
+      margin: 18px 0 12px;
+      font-size: clamp(36px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: -.055em;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .celebrations-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .celebration-card {
+      position: relative;
+      padding: 26px;
+      min-height: 230px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background:
+        linear-gradient(150deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
+      overflow: hidden;
+      transition:
+        transform .3s var(--ease),
+        border-color .3s var(--ease),
+        background .3s var(--ease);
+    }
+
+    .celebration-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(245,201,106,.27);
+      background:
+        linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.045));
+    }
+
+    .celebration-card::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -70px;
+      bottom: -80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,201,106,.11), transparent 68%);
+    }
+
+    .celebration-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 22px;
+      border-radius: 16px;
+      background: rgba(245,201,106,.09);
+      color: var(--gold-2);
+      border: 1px solid rgba(245,201,106,.15);
+    }
+
+    .celebration-card h3 {
+      margin-bottom: 14px;
+      font-size: 22px;
+      letter-spacing: -.03em;
+    }
+
+    .person-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .person {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      padding-top: 9px;
+      border-top: 1px solid rgba(255,255,255,.075);
+    }
+
+    .person:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .person span {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .map-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .55fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .map-card,
+    .details-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: rgba(255,255,255,.045);
+    }
+
+    .map-card {
+      min-height: 410px;
+    }
+
+    .map-card iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 410px;
+      border: 0;
+      filter: saturate(.8) contrast(.96);
+    }
+
+    .details-card {
+      padding: 28px;
+    }
+
+    .details-stack {
+      display: grid;
+      gap: 22px;
+      margin-top: 26px;
+    }
+
+    .detail-item {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 13px;
+      align-items: start;
+    }
+
+    .detail-item strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .detail-item span,
+    .detail-item code {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .detail-item code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .rsvp-section {
+      padding-bottom: 110px;
+    }
+
+    .rsvp-panel {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 24px;
+      padding: clamp(28px, 5vw, 54px);
+      border: 1px solid rgba(245,201,106,.22);
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(119,217,255,.11), transparent 31%),
+        radial-gradient(circle at 88% 76%, rgba(255,159,200,.10), transparent 32%),
+        linear-gradient(145deg, rgba(245,201,106,.08), rgba(255,255,255,.045));
+      box-shadow: var(--shadow);
+    }
+
+    .rsvp-panel h2 {
+      margin: 12px 0 13px;
+      font-size: clamp(37px, 5vw, 62px);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    .rsvp-panel p {
+      max-width: 680px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 22px;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      background: rgba(255,255,255,.045);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-pill strong {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px rgba(103,232,165,.55);
+    }
+
+    .footer {
+      padding: 26px 0 48px;
+      border-top: 1px solid rgba(255,255,255,.07);
+      color: #8896aa;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity .75s var(--ease),
+        transform .75s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(2, 8, 17, .72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .24s var(--ease);
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      width: min(100%, 620px);
+      max-height: min(92svh, 860px);
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(119,217,255,.10), transparent 26%),
+        #0b1728;
+      box-shadow: 0 30px 100px rgba(0,0,0,.5);
+      transform: translateY(20px) scale(.975);
+      transition: transform .28s var(--ease);
+    }
+
+    .modal-backdrop.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 26px 26px 18px;
+      background: rgba(11, 23, 40, .92);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(16px);
+    }
+
+    .modal-header h2 {
+      margin: 6px 0 4px;
+      font-size: 30px;
+      letter-spacing: -.04em;
+    }
+
+    .modal-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .close-button {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255,255,255,.05);
+      cursor: pointer;
+      transition: transform .2s var(--ease), background .2s var(--ease);
+    }
+
+    .close-button:hover {
+      transform: rotate(6deg);
+      background: rgba(255,255,255,.09);
+    }
+
+    .rsvp-form {
+      padding: 24px 26px 28px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .field > label,
+    .field-label {
+      color: #e7edf6;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 15px;
+      outline: 0;
+      color: var(--text);
+      background: rgba(255,255,255,.055);
+      transition:
+        border-color .2s var(--ease),
+        box-shadow .2s var(--ease),
+        background .2s var(--ease);
+    }
+
+    input {
+      min-height: 50px;
+      padding: 0 15px;
+    }
+
+    textarea {
+      min-height: 116px;
+      resize: vertical;
+      padding: 13px 15px;
+      line-height: 1.5;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: rgba(245,201,106,.52);
+      box-shadow: 0 0 0 4px rgba(245,201,106,.08);
+      background: rgba(255,255,255,.07);
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .choice {
+      position: relative;
+    }
+
+    .choice input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .choice label {
+      min-height: 88px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 17px;
+      background: rgba(255,255,255,.045);
+      cursor: pointer;
+      transition:
+        transform .2s var(--ease),
+        border-color .2s var(--ease),
+        background .2s var(--ease);
+    }
+
+    .choice label:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    .choice strong {
+      font-size: 15px;
+    }
+
+    .choice span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .choice input:checked + label {
+      border-color: rgba(245,201,106,.55);
+      background: rgba(245,201,106,.095);
+      box-shadow: inset 0 0 0 1px rgba(245,201,106,.12);
+    }
+
+    .guest-row {
+      display: grid;
+      grid-template-columns: 1fr 130px;
+      gap: 12px;
+    }
+
+    .field-help {
+      margin-top: -2px;
+      color: #8998ad;
+      font-size: 12px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .form-message {
+      display: none;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .form-message.show {
+      display: block;
+    }
+
+    .form-message.error {
+      border: 1px solid rgba(255,136,148,.26);
+      color: #ffc3ca;
+      background: rgba(255,136,148,.075);
+    }
+
+    .form-message.success {
+      border: 1px solid rgba(103,232,165,.26);
+      color: #baffd8;
+      background: rgba(103,232,165,.075);
+    }
+
+    .success-view {
+      display: none;
+      padding: 36px 28px 34px;
+      text-align: center;
+    }
+
+    .success-view.show {
+      display: block;
+    }
+
+    .success-icon {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      margin: 4px auto 20px;
+      border: 1px solid rgba(245,201,106,.28);
+      border-radius: 50%;
+      color: #15120a;
+      background: linear-gradient(135deg, #fff3c1, var(--gold));
+      box-shadow: 0 18px 50px rgba(245,201,106,.2);
+    }
+
+    .success-view h3 {
+      margin-bottom: 10px;
+      font-size: 30px;
+      letter-spacing: -.04em;
+    }
+
+    .success-view p {
+      max-width: 450px;
+      margin: 0 auto 23px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .toast-region {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 150;
+      display: grid;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      width: min(360px, calc(100vw - 36px));
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 16px;
+      color: var(--text);
+      background: rgba(10, 24, 42, .94);
+      box-shadow: 0 18px 50px rgba(0,0,0,.34);
+      backdrop-filter: blur(16px);
+      transform: translateY(18px);
+      opacity: 0;
+      animation: toastIn .3s var(--ease) forwards;
+    }
+
+    .toast strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+
+    .toast span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @keyframes toastIn {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 12px;
+      top: 10px;
+      z-index: 999;
+      transform: translateY(-160%);
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: white;
+      color: #111827;
+      transition: transform .2s;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        min-height: auto;
+        padding-top: 130px;
+      }
+
+      .hero-grid,
+      .map-layout,
+      .rsvp-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .event-card {
+        max-width: 680px;
+      }
+
+      .rsvp-panel .button.primary {
+        width: fit-content;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .page-shell {
+        width: min(calc(100% - 22px), var(--max-width));
+      }
+
+      .topbar {
+        top: 8px;
+        width: calc(100% - 16px);
+        padding-left: 12px;
+      }
+
+      .brand span:last-child {
+        max-width: 150px;
+      }
+
+      .top-actions .secondary {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 112px;
+        padding-bottom: 48px;
+      }
+
+      h1 {
+        font-size: clamp(49px, 15vw, 72px);
+      }
+
+      .hero-copy {
+        font-size: 16px;
+      }
+
+      .hero-actions .button {
+        width: 100%;
+      }
+
+      .card-top,
+      .card-bottom {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .celebrations-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .person {
+        display: grid;
+        gap: 3px;
+      }
+
+      .person span {
+        text-align: left;
+      }
+
+      section {
+        padding: 56px 0;
+      }
+
+      .location-actions,
+      .choice-grid,
+      .guest-row {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-backdrop {
+        padding: 8px;
+        align-items: end;
+      }
+
+      .modal {
+        width: 100%;
+        max-height: 94svh;
+        border-radius: 24px 24px 16px 16px;
+      }
+
+      .modal-header,
+      .rsvp-form {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .form-actions {
+        display: grid;
+      }
+
+      .form-actions .button {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+
+      .orb {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to invitation</a>
+
+  <div class="ambient" aria-hidden="true">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+  </div>
+
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Multi-Celebration home">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span>Multi-Celebration</span>
+    </a>
+
+    <div class="top-actions">
+      <a class="button secondary" href="#details">Event details</a>
+      <button class="button primary js-open-rsvp" type="button">RSVP</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="page-shell hero-grid">
+        <div class="reveal visible">
+          <div class="eyebrow"><span class="dot"></span> You’re invited</div>
+
+          <h1>
+            One day.
+            <span class="gradient-text">Four reasons</span>
+            to celebrate.
+          </h1>
+
+          <p class="hero-copy">
+            Please join us for a special Multi-Celebration honoring the graduation
+            and birthdays of Lex Mariun Señagan, Edwin Señagan, Lexter Jay Señagan,
+            and Lex Luther Señagan.
+          </p>
+
+          <div class="hero-actions">
+            <button class="button primary js-open-rsvp" type="button">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 12.5 10.2 16 17.5 8.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Confirm attendance
+            </button>
+
+            <a class="button secondary" href="#celebrations">
+              See who we’re celebrating
+            </a>
+          </div>
+
+          <div class="mini-note">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s7-3.6 7-10V5l-7-3-7 3v6c0 6.4 7 10 7 10Z" stroke="currentColor" stroke-width="1.8"/>
+              <path d="m9.2 11.6 1.8 1.8 3.9-4.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Your RSVP is stored securely and is not shown publicly.
+          </div>
+        </div>
+
+        <aside class="event-card reveal visible" id="eventCard" aria-label="Event summary">
+          <div class="card-top">
+            <div class="date-badge">
+              <div class="date-number">22</div>
+              <div class="date-meta">
+                <strong>Saturday · August 2026</strong>
+                <span>Looc, Oslob · Cebu</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="countdown-title" id="countdownLabel">Celebration begins in</div>
+              <div class="countdown" aria-live="polite">
+                <div class="count-unit">
+                  <strong id="days">--</strong>
+                  <span>Days</span>
+                </div>
+                <div class="count-unit">
+                  <strong id="hours">--</strong>
+                  <span>Hours</span>
+                </div>
+                <div class="count-unit">
+                  <strong id="minutes">--</strong>
+                  <span>Min</span>
+                </div>
+                <div class="count-unit">
+                  <strong id="seconds">--</strong>
+                  <span>Sec</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="location-row">
+              <div class="round-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/>
+                  <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+              </div>
+              <div>
+                <strong>Beside Melcar Refilling Station</strong>
+                <span>Looc, Oslob · 9.542456, 123.445854</span>
+              </div>
+            </div>
+
+            <div class="location-actions">
+              <a
+                class="button secondary"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.google.com/maps/search/?api=1&query=9.542456,123.445854"
+              >
+                Open map
+              </a>
+
+              <button class="button ghost" id="copyCoordinates" type="button">
+                Copy coordinates
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="celebrations">
+      <div class="page-shell">
+        <div class="section-header reveal">
+          <div class="section-label"><span class="dot"></span> The celebration</div>
+          <h2>Milestones worth gathering for.</h2>
+          <p>
+            A shared celebration for academic achievements, birthdays, family,
+            friendship, and the people who helped make each milestone possible.
+          </p>
+        </div>
+
+        <div class="celebrations-grid">
+          <article class="celebration-card reveal">
+            <div class="celebration-icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <path d="m3 9 9-5 9 5-9 5-9-5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M7 11.4V16c2.8 2.1 7.2 2.1 10 0v-4.6M21 9v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <h3>Graduation Celebration</h3>
+
+            <div class="person-list">
+              <div class="person">
+                <strong>Lex Mariun Señagan</strong>
+                <span>Computer Engineer</span>
+              </div>
+              <div class="person">
+                <strong>Lexter Jay Señagan</strong>
+                <span>Electrical Engineer</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="celebration-card reveal">
+            <div class="celebration-icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <path d="M5 10h14v10H5V10Z" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M8 10V7.5M12 10V6M16 10V7.5M8 5.5v-1M12 4v-1M16 5.5v-1M4 14h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <h3>Birthday Celebration</h3>
+
+            <div class="person-list">
+              <div class="person">
+                <strong>Edwin Señagan</strong>
+                <span>Birthday celebration</span>
+              </div>
+              <div class="person">
+                <strong>Lexter Jay Señagan</strong>
+                <span>Birthday celebration</span>
+              </div>
+              <div class="person">
+                <strong>Lex Luther Señagan</strong>
+                <span>Birthday celebration</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="details">
+      <div class="page-shell">
+        <div class="section-header reveal">
+          <div class="section-label"><span class="dot"></span> Event details</div>
+          <h2>Everything you need for the day.</h2>
+          <p>
+            Save the date, open the exact location, and send your attendance
+            response before heading over.
+          </p>
+        </div>
+
+        <div class="map-layout">
+          <div class="map-card reveal">
+            <iframe
+              title="Map showing the celebration location in Looc, Oslob"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=123.435854%2C9.532456%2C123.455854%2C9.552456&layer=mapnik&marker=9.542456%2C123.445854"
+            ></iframe>
+          </div>
+
+          <aside class="details-card reveal">
+            <div class="section-label"><span class="dot"></span> Saturday</div>
+
+            <div class="details-stack">
+              <div class="detail-item">
+                <div class="round-icon">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="4" y="5.5" width="16" height="14.5" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M8 3v5M16 3v5M4 10h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong>August 22, 2026</strong>
+                  <span>Saturday</span>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="round-icon">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong>Beside Melcar Refilling Station</strong>
+                  <span>Looc, Oslob</span>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="round-icon">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6 17.5 18 6.5M7.5 5H19v11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong>Coordinates</strong>
+                  <code>9.542456, 123.445854</code>
+                </div>
+              </div>
+            </div>
+
+            <a
+              class="button primary"
+              style="width:100%; margin-top:28px;"
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.google.com/maps/dir/?api=1&destination=9.542456,123.445854"
+            >
+              Get directions
+            </a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="rsvp-section">
+      <div class="page-shell">
+        <div class="rsvp-panel reveal">
+          <div>
+            <div class="section-label"><span class="dot"></span> RSVP</div>
+            <h2>Will you be joining us?</h2>
+            <p>
+              Confirm whether you can attend. You can return to this same device
+              later to update your response if your plans change.
+            </p>
+
+            <div class="stats-row" id="statsRow" aria-live="polite">
+              <span class="stat-pill">
+                <span class="status-dot"></span>
+                RSVP system ready
+              </span>
+            </div>
+          </div>
+
+          <button class="button primary js-open-rsvp" type="button">
+            Respond now
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="page-shell">
+      With gratitude from the Señagan family · Multi-Celebration · August 22, 2026
+    </div>
+  </footer>
+
+  <div
+    class="modal-backdrop"
+    id="rsvpModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="rsvpTitle"
+    aria-hidden="true"
+  >
+    <div class="modal">
+      <div id="formView">
+        <div class="modal-header">
+          <div>
+            <div class="section-label"><span class="dot"></span> Your response</div>
+            <h2 id="rsvpTitle">RSVP</h2>
+            <p id="rsvpSubtitle">Let us know if we’ll see you there.</p>
+          </div>
+
+          <button class="close-button js-close-rsvp" type="button" aria-label="Close RSVP form">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <form class="rsvp-form" id="rsvpForm" novalidate>
+          <div class="form-message" id="formMessage" role="alert"></div>
+
+          <div class="field">
+            <label for="guestName">Your name</label>
+            <input
+              id="guestName"
+              name="guestName"
+              type="text"
+              autocomplete="name"
+              maxlength="120"
+              placeholder="Enter your full name"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <span class="field-label">Can you attend?</span>
+            <div class="choice-grid">
+              <div class="choice">
+                <input id="attending" name="attendance" type="radio" value="attending" required />
+                <label for="attending">
+                  <strong>Yes, I’ll be there</strong>
+                  <span>Count me in for the celebration.</span>
+                </label>
+              </div>
+
+              <div class="choice">
+                <input id="declined" name="attendance" type="radio" value="declined" required />
+                <label for="declined">
+                  <strong>I can’t make it</strong>
+                  <span>Send my best wishes instead.</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="guest-row" id="partyFields">
+            <div class="field">
+              <label for="companionNames">Companion names <span style="color:#8190a4;font-weight:500;">(optional)</span></label>
+              <input
+                id="companionNames"
+                name="companionNames"
+                type="text"
+                maxlength="240"
+                placeholder="e.g. Ana, Miguel"
+              />
+              <div class="field-help">Separate multiple names with commas.</div>
+            </div>
+
+            <div class="field">
+              <label for="partySize">Party size</label>
+              <input
+                id="partySize"
+                name="partySize"
+                type="number"
+                min="1"
+                max="10"
+                value="1"
+                inputmode="numeric"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message">Message <span style="color:#8190a4;font-weight:500;">(optional)</span></label>
+            <textarea
+              id="message"
+              name="message"
+              maxlength="600"
+              placeholder="Leave a short message for the celebrants…"
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="button secondary js-close-rsvp" type="button">Not now</button>
+            <button class="button primary" id="submitRsvp" type="submit">
+              <span id="submitLabel">Send RSVP</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="success-view" id="successView">
+        <div class="success-icon" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+            <path d="M6 12.5 10 16.5 18.5 8" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 id="successTitle">Thank you!</h3>
+        <p id="successText">Your RSVP has been recorded.</p>
+        <button class="button primary js-close-rsvp" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      /*
+       * ============================================================
+       * CONFIGURATION
+       * ============================================================
+       * Replace the value below after Railway gives your API service
+       * a public HTTPS domain.
+       *
+       * Example:
+       * https://multi-celebration-api-production.up.railway.app
+       */
+      const API_BASE = "https://YOUR-RAILWAY-API-DOMAIN.up.railway.app";
+
+      const EVENT_DATE = new Date("2026-08-22T00:00:00+08:00");
+      const RSVP_STORAGE_KEY = "multiCelebrationRsvpV1";
+
+      const els = {
+        modal: document.getElementById("rsvpModal"),
+        form: document.getElementById("rsvpForm"),
+        formView: document.getElementById("formView"),
+        successView: document.getElementById("successView"),
+        formMessage: document.getElementById("formMessage"),
+        submit: document.getElementById("submitRsvp"),
+        submitLabel: document.getElementById("submitLabel"),
+        guestName: document.getElementById("guestName"),
+        attending: document.getElementById("attending"),
+        declined: document.getElementById("declined"),
+        partyFields: document.getElementById("partyFields"),
+        partySize: document.getElementById("partySize"),
+        companionNames: document.getElementById("companionNames"),
+        message: document.getElementById("message"),
+        rsvpSubtitle: document.getElementById("rsvpSubtitle"),
+        successTitle: document.getElementById("successTitle"),
+        successText: document.getElementById("successText"),
+        statsRow: document.getElementById("statsRow"),
+        eventCard: document.getElementById("eventCard"),
+        toastRegion: document.getElementById("toastRegion")
+      };
+
+      let storedRsvp = readStoredRsvp();
+      let lastFocusedElement = null;
+
+      function apiConfigured() {
+        return !API_BASE.includes("YOUR-RAILWAY-API-DOMAIN");
+      }
+
+      function readStoredRsvp() {
+        try {
+          const raw = localStorage.getItem(RSVP_STORAGE_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function writeStoredRsvp(value) {
+        storedRsvp = value;
+        localStorage.setItem(RSVP_STORAGE_KEY, JSON.stringify(value));
+      }
+
+      function showToast(title, message) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span>`;
+        els.toastRegion.appendChild(toast);
+
+        window.setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateY(12px)";
+          window.setTimeout(() => toast.remove(), 250);
+        }, 3200);
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        }[char]));
+      }
+
+      function setFormMessage(type, message) {
+        els.formMessage.className = `form-message show ${type}`;
+        els.formMessage.textContent = message;
+      }
+
+      function clearFormMessage() {
+        els.formMessage.className = "form-message";
+        els.formMessage.textContent = "";
+      }
+
+      function setSubmitting(isSubmitting) {
+        els.submit.disabled = isSubmitting;
+        els.submitLabel.textContent = isSubmitting
+          ? "Saving…"
+          : storedRsvp
+            ? "Update RSVP"
+            : "Send RSVP";
+      }
+
+      function syncAttendanceUI() {
+        const isDeclined = els.declined.checked;
+        els.partyFields.style.opacity = isDeclined ? ".45" : "1";
+        els.partyFields.style.pointerEvents = isDeclined ? "none" : "auto";
+
+        if (isDeclined) {
+          els.partySize.value = "1";
+          els.companionNames.value = "";
+        }
+      }
+
+      function resetSuccessView() {
+        els.successView.classList.remove("show");
+        els.formView.style.display = "";
+      }
+
+      function showSuccess(attendance, isUpdate) {
+        els.formView.style.display = "none";
+        els.successView.classList.add("show");
+
+        if (attendance === "attending") {
+          els.successTitle.textContent = isUpdate ? "RSVP updated" : "We’ll see you there!";
+          els.successText.textContent =
+            "Your attendance has been confirmed. We look forward to celebrating with you.";
+          launchConfetti();
+        } else {
+          els.successTitle.textContent = isUpdate ? "RSVP updated" : "Thank you for letting us know";
+          els.successText.textContent =
+            "Your response has been recorded. We appreciate your warm wishes for the celebrants.";
+        }
+      }
+
+      function populateStoredRsvp() {
+        if (!storedRsvp || !storedRsvp.id || !storedRsvp.editToken) {
+          els.rsvpSubtitle.textContent = "Let us know if we’ll see you there.";
+          els.submitLabel.textContent = "Send RSVP";
+          return;
+        }
+
+        els.rsvpSubtitle.textContent = "You already responded on this device. You can update it below.";
+        els.submitLabel.textContent = "Update RSVP";
+
+        fetchOwnRsvp();
+      }
+
+      async function fetchOwnRsvp() {
+        if (!apiConfigured() || !storedRsvp?.id || !storedRsvp?.editToken) return;
+
+        try {
+          const response = await fetch(`${API_BASE}/api/rsvps/${encodeURIComponent(storedRsvp.id)}`, {
+            headers: {
+              "X-RSVP-Token": storedRsvp.editToken
+            }
+          });
+
+          if (response.status === 404 || response.status === 403) {
+            localStorage.removeItem(RSVP_STORAGE_KEY);
+            storedRsvp = null;
+            els.rsvpSubtitle.textContent = "Let us know if we’ll see you there.";
+            els.submitLabel.textContent = "Send RSVP";
+            return;
+          }
+
+          if (!response.ok) return;
+
+          const data = await response.json();
+
+          els.guestName.value = data.guestName || "";
+          els.attending.checked = data.attendance === "attending";
+          els.declined.checked = data.attendance === "declined";
+          els.partySize.value = String(data.partySize || 1);
+          els.companionNames.value = data.companionNames || "";
+          els.message.value = data.message || "";
+          syncAttendanceUI();
+        } catch {
+          // The invitation remains usable even if the API is temporarily unavailable.
+        }
+      }
+
+      function openModal() {
+        lastFocusedElement = document.activeElement;
+        resetSuccessView();
+        clearFormMessage();
+        els.modal.classList.add("open");
+        els.modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+        populateStoredRsvp();
+
+        window.setTimeout(() => {
+          els.guestName.focus({ preventScroll: true });
+        }, 140);
+      }
+
+      function closeModal() {
+        els.modal.classList.remove("open");
+        els.modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+        resetSuccessView();
+
+        if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+          lastFocusedElement.focus({ preventScroll: true });
+        }
+      }
+
+      document.querySelectorAll(".js-open-rsvp").forEach((button) => {
+        button.addEventListener("click", openModal);
+      });
+
+      document.querySelectorAll(".js-close-rsvp").forEach((button) => {
+        button.addEventListener("click", closeModal);
+      });
+
+      els.modal.addEventListener("click", (event) => {
+        if (event.target === els.modal) closeModal();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && els.modal.classList.contains("open")) {
+          closeModal();
+        }
+      });
+
+      [els.attending, els.declined].forEach((input) => {
+        input.addEventListener("change", syncAttendanceUI);
+      });
+
+      els.form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        clearFormMessage();
+
+        const guestName = els.guestName.value.trim();
+        const attendance = document.querySelector('input[name="attendance"]:checked')?.value;
+        const partySize = attendance === "attending"
+          ? Number.parseInt(els.partySize.value, 10)
+          : 1;
+        const companionNames = attendance === "attending"
+          ? els.companionNames.value.trim()
+          : "";
+        const message = els.message.value.trim();
+
+        if (guestName.length < 2) {
+          setFormMessage("error", "Please enter your name.");
+          els.guestName.focus();
+          return;
+        }
+
+        if (!attendance) {
+          setFormMessage("error", "Please choose whether you can attend.");
+          return;
+        }
+
+        if (
+          attendance === "attending" &&
+          (!Number.isInteger(partySize) || partySize < 1 || partySize > 10)
+        ) {
+          setFormMessage("error", "Party size must be between 1 and 10.");
+          els.partySize.focus();
+          return;
+        }
+
+        if (!apiConfigured()) {
+          setFormMessage(
+            "error",
+            "The RSVP API has not been configured yet. Set API_BASE in index.html to your Railway API domain."
+          );
+          return;
+        }
+
+        setSubmitting(true);
+
+        const payload = {
+          guestName,
+          attendance,
+          partySize,
+          companionNames,
+          message
+        };
+
+        const isUpdate = Boolean(storedRsvp?.id && storedRsvp?.editToken);
+
+        try {
+          const response = await fetch(
+            isUpdate
+              ? `${API_BASE}/api/rsvps/${encodeURIComponent(storedRsvp.id)}`
+              : `${API_BASE}/api/rsvps`,
+            {
+              method: isUpdate ? "PUT" : "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(isUpdate ? { "X-RSVP-Token": storedRsvp.editToken } : {})
+              },
+              body: JSON.stringify(payload)
+            }
+          );
+
+          const data = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            throw new Error(data.error || "We could not save your RSVP. Please try again.");
+          }
+
+          if (!isUpdate) {
+            writeStoredRsvp({
+              id: data.id,
+              editToken: data.editToken
+            });
+          }
+
+          showSuccess(attendance, isUpdate);
+          loadStats();
+        } catch (error) {
+          setFormMessage(
+            "error",
+            error instanceof Error
+              ? error.message
+              : "We could not save your RSVP. Please try again."
+          );
+        } finally {
+          setSubmitting(false);
+        }
+      });
+
+      async function loadStats() {
+        if (!apiConfigured()) {
+          els.statsRow.innerHTML = `
+            <span class="stat-pill">
+              <span class="status-dot"></span>
+              Connect Railway API to activate live RSVPs
+            </span>
+          `;
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/api/rsvps/stats`, {
+            headers: { "Accept": "application/json" }
+          });
+
+          if (!response.ok) throw new Error("Stats unavailable");
+
+          const stats = await response.json();
+
+          els.statsRow.innerHTML = `
+            <span class="stat-pill">
+              <span class="status-dot"></span>
+              <strong>${Number(stats.attendingPeople || 0)}</strong> attending
+            </span>
+            <span class="stat-pill">
+              <strong>${Number(stats.responses || 0)}</strong> responses
+            </span>
+          `;
+        } catch {
+          els.statsRow.innerHTML = `
+            <span class="stat-pill">
+              <span class="status-dot"></span>
+              RSVP system active
+            </span>
+          `;
+        }
+      }
+
+      function updateCountdown() {
+        const now = new Date();
+        let diff = EVENT_DATE.getTime() - now.getTime();
+
+        if (diff <= 0) {
+          document.getElementById("countdownLabel").textContent =
+            now.getTime() < EVENT_DATE.getTime() + 24 * 60 * 60 * 1000
+              ? "Today is the celebration!"
+              : "Thank you for celebrating with us";
+
+          ["days", "hours", "minutes", "seconds"].forEach((id) => {
+            document.getElementById(id).textContent = "00";
+          });
+          return;
+        }
+
+        const dayMs = 24 * 60 * 60 * 1000;
+        const hourMs = 60 * 60 * 1000;
+        const minuteMs = 60 * 1000;
+
+        const days = Math.floor(diff / dayMs);
+        diff %= dayMs;
+
+        const hours = Math.floor(diff / hourMs);
+        diff %= hourMs;
+
+        const minutes = Math.floor(diff / minuteMs);
+        diff %= minuteMs;
+
+        const seconds = Math.floor(diff / 1000);
+
+        document.getElementById("days").textContent = String(days).padStart(2, "0");
+        document.getElementById("hours").textContent = String(hours).padStart(2, "0");
+        document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
+        document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
+      }
+
+      document.getElementById("copyCoordinates").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText("9.542456, 123.445854");
+          showToast("Coordinates copied", "9.542456, 123.445854");
+        } catch {
+          showToast("Coordinates", "9.542456, 123.445854");
+        }
+      });
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+
+      document.querySelectorAll(".reveal:not(.visible)").forEach((node) => {
+        revealObserver.observe(node);
+      });
+
+      if (
+        window.matchMedia("(pointer:fine)").matches &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        els.eventCard.addEventListener("pointermove", (event) => {
+          const rect = els.eventCard.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - 0.5;
+          const y = (event.clientY - rect.top) / rect.height - 0.5;
+          els.eventCard.style.transform =
+            `perspective(900px) rotateY(${x * 5}deg) rotateX(${y * -5}deg) translateY(-2px)`;
+        });
+
+        els.eventCard.addEventListener("pointerleave", () => {
+          els.eventCard.style.transform = "";
+        });
+      }
+
+      function launchConfetti() {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const canvas = document.getElementById("confettiCanvas");
+        const ctx = canvas.getContext("2d");
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvas.width = Math.floor(window.innerWidth * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+        ctx.scale(dpr, dpr);
+
+        const colors = ["#f5c96a", "#77d9ff", "#ff9fc8", "#67e8a5", "#ffffff"];
+        const particles = Array.from({ length: 110 }, () => ({
+          x: window.innerWidth * (0.35 + Math.random() * 0.3),
+          y: window.innerHeight * 0.42,
+          vx: (Math.random() - 0.5) * 10,
+          vy: -4 - Math.random() * 8,
+          gravity: 0.18 + Math.random() * 0.09,
+          size: 5 + Math.random() * 6,
+          rotation: Math.random() * Math.PI,
+          vr: (Math.random() - 0.5) * 0.3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 1
+        }));
+
+        const startedAt = performance.now();
+
+        function frame(now) {
+          ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          const elapsed = now - startedAt;
+
+          particles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += p.gravity;
+            p.rotation += p.vr;
+            p.life = Math.max(0, 1 - elapsed / 1800);
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rotation);
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.65);
+            ctx.restore();
+          });
+
+          if (elapsed < 1800) {
+            requestAnimationFrame(frame);
+          } else {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          }
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      updateCountdown();
+      window.setInterval(updateCountdown, 1000);
+      loadStats();
+      populateStoredRsvp();
+      syncAttendanceUI();
+    })();
+  </script>
+</body>
+</html>
