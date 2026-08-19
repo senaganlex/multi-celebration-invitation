@@ -2220,8 +2220,7 @@
             {
               cache: "no-store",
               headers: {
-                "Accept": "application/json",
-                "Cache-Control": "no-cache"
+                "Accept": "application/json"
               }
             }
           );
@@ -2336,7 +2335,7 @@
           await navigator.clipboard.writeText("9.542456, 123.445854");
           showToast("Coordinates copied", "9.542456, 123.445854");
         } catch {
-          showToast("Coordinates", "9.542456, 123.445854");
+          showToast("Failed to copy coordinates", "9.542456, 123.445854");
         }
       });
 
