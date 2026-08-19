@@ -1353,6 +1353,819 @@
       }
     }
 
+
+    /* ============================================================
+       Motion System
+       ============================================================
+       Uses transform/opacity/filter for the majority of motion to
+       avoid layout shifts. Interaction timings share a small set of
+       tokens so hover, focus, modal, card, and live-state animation
+       all feel like one system.
+    */
+    :root {
+      --motion-instant: 120ms;
+      --motion-fast: 180ms;
+      --motion-base: 300ms;
+      --motion-slow: 480ms;
+      --motion-enter: 720ms;
+      --ease-standard: cubic-bezier(.2, .75, .2, 1);
+      --ease-out: cubic-bezier(.16, 1, .3, 1);
+      --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    html {
+      scroll-padding-top: 92px;
+    }
+
+    /* Initial page choreography */
+    .topbar {
+      animation: topbarEnter var(--motion-enter) var(--ease-out) 40ms backwards;
+      transition:
+        transform var(--motion-slow) var(--ease-out),
+        background-color var(--motion-slow) var(--ease-standard),
+        border-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out);
+    }
+
+    .topbar.is-scrolled {
+      transform: translateX(-50%) translateY(-2px) scale(.985);
+      background: rgba(7, 17, 31, .84);
+      border-color: rgba(255,255,255,.16);
+      box-shadow: 0 18px 54px rgba(0,0,0,.30);
+    }
+
+    @keyframes topbarEnter {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-18px) scale(.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+    }
+
+    .hero .eyebrow {
+      animation: heroElementEnter 660ms var(--ease-out) 90ms backwards;
+    }
+
+    .hero h1 {
+      animation: heroElementEnter 780ms var(--ease-out) 150ms backwards;
+    }
+
+    .hero .hero-copy {
+      animation: heroElementEnter 700ms var(--ease-out) 235ms backwards;
+    }
+
+    .hero .hero-actions {
+      animation: heroElementEnter 650ms var(--ease-out) 315ms backwards;
+    }
+
+    .hero .mini-note {
+      animation: heroElementEnter 600ms var(--ease-out) 390ms backwards;
+    }
+
+    .event-card.reveal.visible {
+      animation: heroCardEnter 820ms var(--ease-out) 180ms backwards;
+    }
+
+    @keyframes heroElementEnter {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+        filter: blur(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes heroCardEnter {
+      from {
+        opacity: 0;
+        transform: perspective(900px) translate3d(24px, 24px, 0) rotateY(-2deg) scale(.975);
+        filter: blur(6px);
+      }
+      to {
+        opacity: 1;
+        transform: perspective(900px) translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    /* Navigation + branding */
+    .brand {
+      transition:
+        color var(--motion-base) var(--ease-standard),
+        opacity var(--motion-base) var(--ease-standard),
+        transform var(--motion-base) var(--ease-out);
+    }
+
+    .brand-mark {
+      transition:
+        transform var(--motion-slow) var(--ease-spring),
+        box-shadow var(--motion-slow) var(--ease-out),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .brand:hover {
+      color: #fff9e6;
+      transform: translate3d(0, -1px, 0);
+    }
+
+    .brand:hover .brand-mark {
+      transform: rotate(10deg) scale(1.07);
+      box-shadow:
+        0 0 0 5px rgba(245, 201, 106, .12),
+        0 8px 22px rgba(245, 201, 106, .16);
+      filter: brightness(1.06);
+    }
+
+    /* Buttons */
+    .button {
+      transform: translate3d(0, 0, 0);
+      transition:
+        transform 360ms var(--ease-out),
+        box-shadow 420ms var(--ease-out),
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        color var(--motion-fast) var(--ease-standard),
+        filter var(--motion-base) var(--ease-standard),
+        opacity var(--motion-fast) var(--ease-standard);
+    }
+
+    .button::after {
+      opacity: 0;
+      transform: translate3d(-125%, 0, 0) skewX(-14deg);
+      animation: none;
+      transition:
+        transform 780ms var(--ease-out),
+        opacity 440ms var(--ease-standard);
+    }
+
+    .button:hover::after {
+      opacity: .72;
+      transform: translate3d(125%, 0, 0) skewX(-14deg);
+      animation: none;
+    }
+
+    .button:hover {
+      transform: translate3d(0, -3px, 0);
+    }
+
+    .button:active {
+      transform: translate3d(0, -1px, 0) scale(.975);
+      transition-duration: var(--motion-instant);
+    }
+
+    .button.primary:hover {
+      filter: brightness(1.035) saturate(1.04);
+      box-shadow:
+        0 18px 46px rgba(245,201,106,.25),
+        0 2px 0 rgba(255,255,255,.24) inset;
+    }
+
+    .button.secondary:hover,
+    .button.ghost:hover {
+      border-color: rgba(245,201,106,.25);
+      background-color: rgba(255,255,255,.095);
+      box-shadow: 0 12px 30px rgba(0,0,0,.15);
+    }
+
+    .button .icon {
+      transition:
+        transform var(--motion-base) var(--ease-spring),
+        opacity var(--motion-fast) var(--ease-standard);
+    }
+
+    .button:hover .icon {
+      transform: translate3d(2px, 0, 0);
+    }
+
+    .button:disabled {
+      transition:
+        opacity var(--motion-base) var(--ease-standard),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .button.is-loading {
+      cursor: wait;
+      filter: saturate(.82);
+    }
+
+    .button.is-loading::after {
+      opacity: .38;
+      animation: loadingSweep 1.15s linear infinite;
+    }
+
+    @keyframes loadingSweep {
+      from { transform: translate3d(-125%, 0, 0) skewX(-14deg); }
+      to { transform: translate3d(125%, 0, 0) skewX(-14deg); }
+    }
+
+    .button:focus-visible,
+    .close-button:focus-visible,
+    .scroll-indicator:focus-visible,
+    .brand:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 3px rgba(7,17,31,.96),
+        0 0 0 6px rgba(245,201,106,.52);
+    }
+
+    /* Scroll entrances */
+    .reveal {
+      opacity: 0;
+      transform: translate3d(0, 28px, 0) scale(.987);
+      filter: blur(7px);
+      transition:
+        opacity 700ms var(--ease-standard),
+        transform 820ms var(--ease-out),
+        filter 680ms var(--ease-standard);
+    }
+
+    .reveal:not(.visible) {
+      will-change: opacity, transform, filter;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0);
+      will-change: auto;
+    }
+
+    /* Event card tilt is driven by CSS variables from requestAnimationFrame. */
+    .event-card {
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+      --card-lift: 0px;
+      transition:
+        transform 180ms var(--ease-out),
+        border-color var(--motion-slow) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .event-card.reveal.visible {
+      transform:
+        perspective(900px)
+        rotateX(var(--tilt-x))
+        rotateY(var(--tilt-y))
+        translate3d(0, var(--card-lift), 0);
+    }
+
+    .date-number,
+    .count-unit,
+    .round-icon,
+    .celebration-icon,
+    .person,
+    .detail-item {
+      transition:
+        transform var(--motion-slow) var(--ease-out),
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        color var(--motion-base) var(--ease-standard),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .count-unit strong {
+      transform-origin: center;
+    }
+
+    /* Cards and surfaces */
+    .celebration-card,
+    .map-card,
+    .details-card,
+    .rsvp-panel {
+      transition:
+        transform var(--motion-slow) var(--ease-out),
+        border-color var(--motion-slow) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        background-color var(--motion-slow) var(--ease-standard),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .celebration-card::after {
+      transition:
+        transform 760ms var(--ease-out),
+        opacity var(--motion-slow) var(--ease-standard);
+      transform-origin: center;
+    }
+
+    .map-card iframe {
+      transform: scale(1.001);
+      transition:
+        transform 760ms var(--ease-out),
+        filter var(--motion-slow) var(--ease-standard);
+    }
+
+    .person strong {
+      transition: color var(--motion-base) var(--ease-standard);
+    }
+
+    .rsvp-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 78% 25%, rgba(245,201,106,.07), transparent 31%);
+      transition: opacity var(--motion-slow) var(--ease-standard);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .event-card:hover {
+        --card-lift: -4px;
+        border-color: rgba(245,201,106,.24);
+        box-shadow: 0 30px 88px rgba(0,0,0,.38);
+      }
+
+      .event-card:hover .date-number {
+        transform: translate3d(0, -2px, 0) rotate(-1.5deg) scale(1.025);
+        box-shadow: 0 18px 44px rgba(245,201,106,.24);
+      }
+
+      .count-unit:hover {
+        transform: translate3d(0, -2px, 0);
+        border-color: rgba(245,201,106,.22);
+        background-color: rgba(255,255,255,.055);
+      }
+
+      .celebration-card:hover {
+        transform: translate3d(0, -7px, 0) scale(1.008);
+        border-color: rgba(245,201,106,.31);
+        background:
+          linear-gradient(150deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
+        box-shadow: 0 24px 64px rgba(0,0,0,.23);
+      }
+
+      .celebration-card:hover::after {
+        transform: scale(1.22);
+        opacity: .95;
+      }
+
+      .celebration-card:hover .celebration-icon {
+        transform: translate3d(0, -2px, 0) rotate(-4deg) scale(1.08);
+        border-color: rgba(245,201,106,.30);
+        box-shadow: 0 12px 28px rgba(245,201,106,.10);
+      }
+
+      .person:hover {
+        transform: translate3d(4px, 0, 0);
+      }
+
+      .person:hover strong {
+        color: #fff8db;
+      }
+
+      .map-card:hover {
+        transform: translate3d(0, -4px, 0);
+        border-color: rgba(119,217,255,.23);
+        box-shadow: 0 22px 58px rgba(0,0,0,.20);
+      }
+
+      .map-card:hover iframe {
+        transform: scale(1.014);
+        filter: saturate(.96) contrast(1);
+      }
+
+      .details-card:hover {
+        transform: translate3d(0, -4px, 0);
+        border-color: rgba(245,201,106,.22);
+        box-shadow: 0 22px 58px rgba(0,0,0,.20);
+      }
+
+      .detail-item:hover {
+        transform: translate3d(3px, 0, 0);
+      }
+
+      .detail-item:hover .round-icon,
+      .location-row:hover .round-icon {
+        transform: scale(1.07);
+        border-color: rgba(245,201,106,.27);
+        background-color: rgba(245,201,106,.08);
+      }
+
+      .rsvp-panel:hover {
+        transform: translate3d(0, -3px, 0);
+        border-color: rgba(245,201,106,.30);
+        box-shadow: 0 30px 88px rgba(0,0,0,.36);
+      }
+
+      .rsvp-panel:hover::after {
+        opacity: 1;
+      }
+    }
+
+    /* Form controls */
+    .field > label,
+    .field-label {
+      transform-origin: left center;
+      transition:
+        color var(--motion-base) var(--ease-standard),
+        transform var(--motion-base) var(--ease-out);
+    }
+
+    .field:focus-within > label {
+      color: var(--gold-2);
+      transform: translate3d(2px, 0, 0);
+    }
+
+    input,
+    textarea {
+      transition:
+        border-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        background-color var(--motion-base) var(--ease-standard),
+        transform var(--motion-base) var(--ease-out);
+    }
+
+    input:hover,
+    textarea:hover {
+      border-color: rgba(255,255,255,.19);
+      background-color: rgba(255,255,255,.064);
+    }
+
+    input:focus,
+    textarea:focus {
+      transform: translate3d(0, -1px, 0);
+      border-color: rgba(245,201,106,.58);
+      box-shadow:
+        0 0 0 4px rgba(245,201,106,.085),
+        0 9px 26px rgba(0,0,0,.10);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      transition: color var(--motion-base) var(--ease-standard);
+    }
+
+    input:focus::placeholder,
+    textarea:focus::placeholder {
+      color: #8190a4;
+    }
+
+    .choice label {
+      transition:
+        transform var(--motion-base) var(--ease-out),
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .choice label:hover {
+      transform: translate3d(0, -3px, 0);
+      border-color: rgba(245,201,106,.28);
+      box-shadow: 0 13px 32px rgba(0,0,0,.13);
+    }
+
+    .choice input:checked + label {
+      transform: translate3d(0, -1px, 0);
+      border-color: rgba(245,201,106,.62);
+      box-shadow:
+        inset 0 0 0 1px rgba(245,201,106,.13),
+        0 11px 28px rgba(245,201,106,.07);
+    }
+
+    .choice input:focus-visible + label {
+      box-shadow:
+        0 0 0 3px rgba(7,17,31,.96),
+        0 0 0 6px rgba(245,201,106,.48);
+    }
+
+    .guest-row {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      filter: saturate(1);
+      transition:
+        opacity var(--motion-slow) var(--ease-standard),
+        transform var(--motion-slow) var(--ease-out),
+        filter var(--motion-slow) var(--ease-standard);
+    }
+
+    .guest-row.is-disabled {
+      opacity: .42;
+      transform: translate3d(0, -2px, 0) scale(.997);
+      filter: saturate(.68);
+      pointer-events: none;
+    }
+
+    /* Validation messages expand/collapse instead of appearing abruptly. */
+    .form-message {
+      display: block;
+      max-height: 0;
+      margin-bottom: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translate3d(0, -7px, 0);
+      visibility: hidden;
+      transition:
+        max-height 380ms var(--ease-out),
+        margin-bottom var(--motion-base) var(--ease-out),
+        padding var(--motion-base) var(--ease-out),
+        opacity var(--motion-base) var(--ease-standard),
+        transform var(--motion-slow) var(--ease-out),
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        visibility 0s linear 380ms;
+    }
+
+    .form-message.error:not(.show),
+    .form-message.success:not(.show) {
+      border-color: transparent;
+      background-color: transparent;
+    }
+
+    .form-message.show {
+      max-height: 130px;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      visibility: visible;
+      transition:
+        max-height 420ms var(--ease-out),
+        margin-bottom var(--motion-base) var(--ease-out),
+        padding var(--motion-base) var(--ease-out),
+        opacity var(--motion-base) var(--ease-standard),
+        transform var(--motion-slow) var(--ease-out),
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        visibility 0s linear 0s;
+    }
+
+    /* Modal / overlay entrance and exit */
+    .modal-backdrop {
+      background: rgba(2,8,17,.58);
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+      transition:
+        opacity 340ms var(--ease-standard),
+        background-color 380ms var(--ease-standard),
+        backdrop-filter 420ms var(--ease-out),
+        -webkit-backdrop-filter 420ms var(--ease-out);
+    }
+
+    .modal-backdrop.open {
+      background: rgba(2,8,17,.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .modal {
+      opacity: 0;
+      filter: blur(5px);
+      transform: translate3d(0, 28px, 0) scale(.965);
+      transition:
+        opacity var(--motion-base) var(--ease-standard),
+        transform 420ms var(--ease-out),
+        filter 360ms var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out);
+      will-change: transform, opacity;
+    }
+
+    .modal-backdrop.open .modal {
+      opacity: 1;
+      filter: blur(0);
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .modal-backdrop.closing .modal {
+      opacity: 0;
+      filter: blur(4px);
+      transform: translate3d(0, 14px, 0) scale(.982);
+    }
+
+    .modal-backdrop.open .modal-header {
+      animation: modalContentEnter 480ms var(--ease-out) 65ms backwards;
+    }
+
+    .modal-backdrop.open .rsvp-form > * {
+      animation: modalContentEnter 500ms var(--ease-out) backwards;
+    }
+
+    .modal-backdrop.open .rsvp-form > :nth-child(1) { animation-delay: 90ms; }
+    .modal-backdrop.open .rsvp-form > :nth-child(2) { animation-delay: 125ms; }
+    .modal-backdrop.open .rsvp-form > :nth-child(3) { animation-delay: 160ms; }
+    .modal-backdrop.open .rsvp-form > :nth-child(4) { animation-delay: 195ms; }
+    .modal-backdrop.open .rsvp-form > :nth-child(5) { animation-delay: 230ms; }
+    .modal-backdrop.open .rsvp-form > :nth-child(6) { animation-delay: 265ms; }
+
+    @keyframes modalContentEnter {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 10px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    .close-button {
+      transition:
+        transform var(--motion-slow) var(--ease-spring),
+        background-color var(--motion-base) var(--ease-standard),
+        border-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        color var(--motion-base) var(--ease-standard);
+    }
+
+    .close-button:hover {
+      transform: rotate(8deg) scale(1.06);
+      border-color: rgba(245,201,106,.23);
+      background-color: rgba(255,255,255,.095);
+      color: var(--gold-2);
+    }
+
+    .close-button:active {
+      transform: rotate(3deg) scale(.94);
+      transition-duration: var(--motion-instant);
+    }
+
+    #formView {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition:
+        opacity var(--motion-fast) var(--ease-standard),
+        transform 220ms var(--ease-out);
+    }
+
+    #formView.is-leaving {
+      opacity: 0;
+      transform: translate3d(-12px, 0, 0);
+    }
+
+    .success-view {
+      opacity: 0;
+      transform: translate3d(14px, 0, 0) scale(.985);
+      transition:
+        opacity var(--motion-base) var(--ease-standard),
+        transform 440ms var(--ease-out);
+    }
+
+    .success-view.show {
+      display: block;
+      opacity: 0;
+      transform: translate3d(14px, 0, 0) scale(.985);
+    }
+
+    .success-view.show.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .success-view.show.is-visible .success-icon {
+      animation: successPop 620ms var(--ease-spring) 70ms backwards;
+    }
+
+    @keyframes successPop {
+      from {
+        opacity: 0;
+        transform: scale(.72) rotate(-6deg);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+      }
+    }
+
+    /* Live counters */
+    .stat-pill {
+      transition:
+        transform var(--motion-slow) var(--ease-out),
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out),
+        color var(--motion-base) var(--ease-standard),
+        opacity var(--motion-base) var(--ease-standard);
+    }
+
+    .stat-pill strong {
+      display: inline-block;
+      min-width: 1ch;
+      transform-origin: center;
+    }
+
+    .stats-row[data-live-state="live"] #liveStat {
+      border-color: rgba(103,232,165,.18);
+      background-color: rgba(103,232,165,.045);
+    }
+
+    .stats-row[data-live-state="offline"] #liveStat {
+      border-color: rgba(255,136,148,.19);
+      background-color: rgba(255,136,148,.05);
+    }
+
+    .status-dot {
+      transition:
+        transform var(--motion-base) var(--ease-spring),
+        opacity var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        box-shadow var(--motion-slow) var(--ease-out);
+    }
+
+    .stat-pill.is-updated {
+      animation: statRefresh 700ms var(--ease-out);
+    }
+
+    @keyframes statRefresh {
+      0% {
+        transform: scale(1);
+        border-color: rgba(255,255,255,.10);
+      }
+      38% {
+        transform: scale(1.055);
+        border-color: rgba(245,201,106,.50);
+        box-shadow: 0 10px 26px rgba(245,201,106,.08);
+      }
+      100% {
+        transform: scale(1);
+        border-color: rgba(255,255,255,.10);
+        box-shadow: none;
+      }
+    }
+
+    @keyframes livePulse {
+      from {
+        opacity: .48;
+        transform: scale(.82);
+        box-shadow: 0 0 7px rgba(103,232,165,.30);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1.16);
+        box-shadow: 0 0 16px rgba(103,232,165,.58);
+      }
+    }
+
+    /* Scroll affordance */
+    .scroll-indicator {
+      transition:
+        opacity var(--motion-slow) var(--ease-standard),
+        transform var(--motion-slow) var(--ease-out),
+        color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .scroll-indicator:hover {
+      transform: translate(-50%, -4px);
+      background-color: rgba(255,255,255,.025);
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.18));
+    }
+
+    .scroll-indicator:hover .scroll-mouse {
+      border-color: rgba(245,201,106,.52);
+      background-color: rgba(245,201,106,.035);
+    }
+
+    .scroll-mouse {
+      transition:
+        border-color var(--motion-base) var(--ease-standard),
+        background-color var(--motion-base) var(--ease-standard),
+        transform var(--motion-slow) var(--ease-out);
+    }
+
+    /* Toast lifecycle */
+    .toast {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0) scale(.985);
+      filter: blur(3px);
+      animation: none;
+      transition:
+        opacity var(--motion-base) var(--ease-standard),
+        transform 420ms var(--ease-out),
+        filter var(--motion-base) var(--ease-standard);
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0);
+    }
+
+    .toast.is-leaving {
+      opacity: 0;
+      transform: translate3d(10px, 8px, 0) scale(.985);
+      filter: blur(2px);
+    }
+
+    /* Footer gets the same scroll entrance language as the main sections. */
+    .footer.reveal.visible {
+      transform: translate3d(0, 0, 0);
+    }
+
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -1371,6 +2184,28 @@
       .scroll-chevron,
       .stats-row[data-live-state="syncing"] .status-dot {
         animation: none !important;
+      }
+
+      .event-card,
+      .event-card.reveal.visible,
+      .celebration-card,
+      .map-card,
+      .details-card,
+      .rsvp-panel,
+      .button,
+      .brand,
+      .brand-mark,
+      .modal,
+      .success-view,
+      #formView,
+      .toast {
+        transform: none !important;
+        filter: none !important;
+      }
+
+      .topbar,
+      .topbar.is-scrolled {
+        transform: translateX(-50%) !important;
       }
     }
   </style>
@@ -1693,7 +2528,7 @@
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer reveal">
     <div class="page-shell">
       With gratitude from the Señagan family · Multi-Celebration · August 22, 2026
     </div>
@@ -1706,6 +2541,7 @@
     aria-modal="true"
     aria-labelledby="rsvpTitle"
     aria-hidden="true"
+    inert
   >
     <div class="modal">
       <div id="formView">
@@ -1865,7 +2701,9 @@
         attendingCount: document.getElementById("attendingCount"),
         responseCount: document.getElementById("responseCount"),
         liveStateText: document.getElementById("liveStateText"),
+        liveStat: document.getElementById("liveStat"),
         scrollIndicator: document.getElementById("scrollIndicator"),
+        topbar: document.querySelector(".topbar"),
         eventCard: document.getElementById("eventCard"),
         toastRegion: document.getElementById("toastRegion")
       };
@@ -1875,6 +2713,15 @@
       let lastStats = null;
       let statsRequestInFlight = false;
       let liveStatsTimer = null;
+      let modalCloseTimer = null;
+      let successSwapTimer = null;
+      let formMessageClearTimer = null;
+      let tiltFrame = null;
+      const numberAnimations = new WeakMap();
+
+      function prefersReducedMotion() {
+        return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      }
 
       function apiConfigured() {
         return !API_BASE.includes("YOUR-RAILWAY-API-DOMAIN");
@@ -1900,10 +2747,18 @@
         toast.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span>`;
         els.toastRegion.appendChild(toast);
 
+        requestAnimationFrame(() => {
+          toast.classList.add("is-visible");
+        });
+
         window.setTimeout(() => {
-          toast.style.opacity = "0";
-          toast.style.transform = "translateY(12px)";
-          window.setTimeout(() => toast.remove(), 250);
+          toast.classList.remove("is-visible");
+          toast.classList.add("is-leaving");
+
+          window.setTimeout(
+            () => toast.remove(),
+            prefersReducedMotion() ? 0 : 430
+          );
         }, 3200);
       }
 
@@ -1918,17 +2773,39 @@
       }
 
       function setFormMessage(type, message) {
-        els.formMessage.className = `form-message show ${type}`;
+        if (formMessageClearTimer) {
+          window.clearTimeout(formMessageClearTimer);
+          formMessageClearTimer = null;
+        }
+
+        els.formMessage.className = `form-message ${type}`;
         els.formMessage.textContent = message;
+
+        requestAnimationFrame(() => {
+          els.formMessage.classList.add("show");
+        });
       }
 
       function clearFormMessage() {
-        els.formMessage.className = "form-message";
-        els.formMessage.textContent = "";
+        if (formMessageClearTimer) {
+          window.clearTimeout(formMessageClearTimer);
+        }
+
+        els.formMessage.classList.remove("show");
+
+        formMessageClearTimer = window.setTimeout(() => {
+          if (!els.formMessage.classList.contains("show")) {
+            els.formMessage.className = "form-message";
+            els.formMessage.textContent = "";
+          }
+          formMessageClearTimer = null;
+        }, prefersReducedMotion() ? 0 : 390);
       }
 
       function setSubmitting(isSubmitting) {
         els.submit.disabled = isSubmitting;
+        els.submit.classList.toggle("is-loading", isSubmitting);
+        els.submit.setAttribute("aria-busy", String(isSubmitting));
         els.submitLabel.textContent = isSubmitting
           ? "Saving…"
           : storedRsvp
@@ -1938,8 +2815,10 @@
 
       function syncAttendanceUI() {
         const isDeclined = els.declined.checked;
-        els.partyFields.style.opacity = isDeclined ? ".45" : "1";
-        els.partyFields.style.pointerEvents = isDeclined ? "none" : "auto";
+
+        els.partyFields.classList.toggle("is-disabled", isDeclined);
+        els.partySize.disabled = isDeclined;
+        els.companionNames.disabled = isDeclined;
 
         if (isDeclined) {
           els.partySize.value = "1";
@@ -1948,24 +2827,52 @@
       }
 
       function resetSuccessView() {
-        els.successView.classList.remove("show");
+        if (successSwapTimer) {
+          window.clearTimeout(successSwapTimer);
+          successSwapTimer = null;
+        }
+
+        els.formView.classList.remove("is-leaving");
         els.formView.style.display = "";
+        els.successView.classList.remove("show", "is-visible");
       }
 
       function showSuccess(attendance, isUpdate) {
-        els.formView.style.display = "none";
-        els.successView.classList.add("show");
+        const isAttending = attendance === "attending";
 
-        if (attendance === "attending") {
+        if (isAttending) {
           els.successTitle.textContent = isUpdate ? "RSVP updated" : "We’ll see you there!";
           els.successText.textContent =
             "Your attendance has been confirmed. We look forward to celebrating with you.";
-          launchConfetti();
         } else {
           els.successTitle.textContent = isUpdate ? "RSVP updated" : "Thank you for letting us know";
           els.successText.textContent =
             "Your response has been recorded. We appreciate your warm wishes for the celebrants.";
         }
+
+        const revealSuccess = () => {
+          els.formView.style.display = "none";
+          els.formView.classList.remove("is-leaving");
+          els.successView.classList.add("show");
+
+          requestAnimationFrame(() => {
+            els.successView.classList.add("is-visible");
+          });
+
+          if (isAttending) {
+            launchConfetti();
+          }
+
+          successSwapTimer = null;
+        };
+
+        if (prefersReducedMotion()) {
+          revealSuccess();
+          return;
+        }
+
+        els.formView.classList.add("is-leaving");
+        successSwapTimer = window.setTimeout(revealSuccess, 190);
       }
 
       function populateStoredRsvp() {
@@ -2016,27 +2923,60 @@
       }
 
       function openModal() {
+        if (modalCloseTimer) {
+          window.clearTimeout(modalCloseTimer);
+          modalCloseTimer = null;
+        }
+
         lastFocusedElement = document.activeElement;
         resetSuccessView();
         clearFormMessage();
-        els.modal.classList.add("open");
+
+        els.modal.classList.remove("closing");
+        els.modal.inert = false;
         els.modal.setAttribute("aria-hidden", "false");
         document.body.classList.add("modal-open");
+
+        // Keep the closed state committed before entering so the transition
+        // always has a stable start point, including rapid reopen actions.
+        void els.modal.offsetWidth;
+        els.modal.classList.add("open");
+
         populateStoredRsvp();
 
         window.setTimeout(() => {
           els.guestName.focus({ preventScroll: true });
-        }, 140);
+        }, prefersReducedMotion() ? 0 : 230);
       }
 
-      function closeModal() {
-        els.modal.classList.remove("open");
+      function finishModalClose() {
+        els.modal.classList.remove("closing");
         els.modal.setAttribute("aria-hidden", "true");
+        els.modal.inert = true;
         document.body.classList.remove("modal-open");
         resetSuccessView();
 
         if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
           lastFocusedElement.focus({ preventScroll: true });
+        }
+
+        modalCloseTimer = null;
+      }
+
+      function closeModal() {
+        if (!els.modal.classList.contains("open")) return;
+
+        els.modal.classList.add("closing");
+        els.modal.classList.remove("open");
+
+        if (modalCloseTimer) {
+          window.clearTimeout(modalCloseTimer);
+        }
+
+        if (prefersReducedMotion()) {
+          finishModalClose();
+        } else {
+          modalCloseTimer = window.setTimeout(finishModalClose, 430);
         }
       }
 
@@ -2163,7 +3103,41 @@
         element.classList.remove("is-updated");
         void element.offsetWidth;
         element.classList.add("is-updated");
-        window.setTimeout(() => element.classList.remove("is-updated"), 700);
+        window.setTimeout(() => element.classList.remove("is-updated"), 720);
+      }
+
+      function animateNumber(element, from, to) {
+        const previousFrame = numberAnimations.get(element);
+        if (previousFrame) {
+          cancelAnimationFrame(previousFrame);
+          numberAnimations.delete(element);
+        }
+
+        if (prefersReducedMotion() || from === to) {
+          element.textContent = String(to);
+          return;
+        }
+
+        const startedAt = performance.now();
+        const duration = 460;
+
+        const frame = (now) => {
+          const progress = Math.min(1, (now - startedAt) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const value = Math.round(from + (to - from) * eased);
+          element.textContent = String(value);
+
+          if (progress < 1) {
+            const frameId = requestAnimationFrame(frame);
+            numberAnimations.set(element, frameId);
+          } else {
+            element.textContent = String(to);
+            numberAnimations.delete(element);
+          }
+        };
+
+        const frameId = requestAnimationFrame(frame);
+        numberAnimations.set(element, frameId);
       }
 
       function renderStats(stats) {
@@ -2173,12 +3147,20 @@
         };
 
         if (!lastStats || lastStats.attendingPeople !== next.attendingPeople) {
-          els.attendingCount.textContent = String(next.attendingPeople);
+          animateNumber(
+            els.attendingCount,
+            lastStats ? lastStats.attendingPeople : 0,
+            next.attendingPeople
+          );
           if (lastStats) pulseStat(els.attendingStat);
         }
 
         if (!lastStats || lastStats.responses !== next.responses) {
-          els.responseCount.textContent = String(next.responses);
+          animateNumber(
+            els.responseCount,
+            lastStats ? lastStats.responses : 0,
+            next.responses
+          );
           if (lastStats) pulseStat(els.responseStat);
         }
 
@@ -2186,6 +3168,7 @@
       }
 
       function setLiveStatsState(state) {
+        const previousState = els.statsRow.dataset.liveState;
         els.statsRow.dataset.liveState = state;
 
         if (state === "syncing") {
@@ -2196,6 +3179,10 @@
           els.liveStateText.textContent = "Reconnecting…";
         } else {
           els.liveStateText.textContent = "Live sync unavailable";
+        }
+
+        if (previousState && previousState !== state) {
+          pulseStat(els.liveStat);
         }
       }
 
@@ -2278,9 +3265,15 @@
       });
 
       function updateScrollIndicator() {
-        if (!els.scrollIndicator) return;
-        const shouldHide = window.scrollY > 72;
-        els.scrollIndicator.classList.toggle("is-hidden", shouldHide);
+        const scrollY = window.scrollY;
+
+        if (els.scrollIndicator) {
+          els.scrollIndicator.classList.toggle("is-hidden", scrollY > 72);
+        }
+
+        if (els.topbar) {
+          els.topbar.classList.toggle("is-scrolled", scrollY > 24);
+        }
       }
 
       els.scrollIndicator?.addEventListener("click", () => {
@@ -2294,6 +3287,26 @@
 
       window.addEventListener("scroll", updateScrollIndicator, { passive: true });
 
+      function setCountdownValue(id, value) {
+        const element = document.getElementById(id);
+        if (!element || element.textContent === value) return;
+
+        element.textContent = value;
+
+        if (!prefersReducedMotion() && typeof element.animate === "function") {
+          element.animate(
+            [
+              { opacity: .55, transform: "translate3d(0, -3px, 0) scale(.985)" },
+              { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" }
+            ],
+            {
+              duration: 210,
+              easing: "cubic-bezier(.16, 1, .3, 1)"
+            }
+          );
+        }
+      }
+
       function updateCountdown() {
         const now = new Date();
         let diff = EVENT_DATE.getTime() - now.getTime();
@@ -2305,7 +3318,7 @@
               : "Thank you for celebrating with us";
 
           ["days", "hours", "minutes", "seconds"].forEach((id) => {
-            document.getElementById(id).textContent = "00";
+            setCountdownValue(id, "00");
           });
           return;
         }
@@ -2325,10 +3338,10 @@
 
         const seconds = Math.floor(diff / 1000);
 
-        document.getElementById("days").textContent = String(days).padStart(2, "0");
-        document.getElementById("hours").textContent = String(hours).padStart(2, "0");
-        document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
-        document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
+        setCountdownValue("days", String(days).padStart(2, "0"));
+        setCountdownValue("hours", String(hours).padStart(2, "0"));
+        setCountdownValue("minutes", String(minutes).padStart(2, "0"));
+        setCountdownValue("seconds", String(seconds).padStart(2, "0"));
       }
 
       document.getElementById("copyCoordinates").addEventListener("click", async () => {
@@ -2349,7 +3362,10 @@
             }
           });
         },
-        { threshold: 0.12 }
+        {
+          threshold: 0.14,
+          rootMargin: "0px 0px -6% 0px"
+        }
       );
 
       document.querySelectorAll(".reveal:not(.visible)").forEach((node) => {
@@ -2358,18 +3374,39 @@
 
       if (
         window.matchMedia("(pointer:fine)").matches &&
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        !prefersReducedMotion()
       ) {
+        let targetTiltX = 0;
+        let targetTiltY = 0;
+
+        const applyTilt = () => {
+          els.eventCard.style.setProperty("--tilt-x", `${targetTiltX.toFixed(2)}deg`);
+          els.eventCard.style.setProperty("--tilt-y", `${targetTiltY.toFixed(2)}deg`);
+          tiltFrame = null;
+        };
+
         els.eventCard.addEventListener("pointermove", (event) => {
           const rect = els.eventCard.getBoundingClientRect();
           const x = (event.clientX - rect.left) / rect.width - 0.5;
           const y = (event.clientY - rect.top) / rect.height - 0.5;
-          els.eventCard.style.transform =
-            `perspective(900px) rotateY(${x * 5}deg) rotateX(${y * -5}deg) translateY(-2px)`;
+
+          targetTiltX = y * -4.2;
+          targetTiltY = x * 5.2;
+
+          if (!tiltFrame) {
+            tiltFrame = requestAnimationFrame(applyTilt);
+          }
         });
 
         els.eventCard.addEventListener("pointerleave", () => {
-          els.eventCard.style.transform = "";
+          targetTiltX = 0;
+          targetTiltY = 0;
+
+          if (tiltFrame) {
+            cancelAnimationFrame(tiltFrame);
+          }
+
+          tiltFrame = requestAnimationFrame(applyTilt);
         });
       }
 
